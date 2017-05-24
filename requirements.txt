@@ -1,0 +1,4 @@
+Django==1.10.1
+psycopg2==2.7.1
+dwollav2==1.2.2
+Pillow==4.1.1
