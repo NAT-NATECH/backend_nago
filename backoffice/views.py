@@ -7,8 +7,8 @@ from django.contrib import messages
 from braces.views import LoginRequiredMixin,StaffuserRequiredMixin
 from django.views.generic import TemplateView, View
 
-class Home(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
+class Home(LoginRequiredMixin, StaffuserRequiredMixin, TemplateView):
     """
     Home
     """
-    template_name = 'backoffice/home.html'
+    template_name = 'backoffice/index.html'

@@ -86,6 +86,10 @@ DATABASES = {
         'USER': 'nago_admin',
         'PASSWORD': 'nago123',
         'HOST': 'localhost',
+        #'NAME': 'nago_server',
+        #'USER': 'nago',
+        #'PASSWORD': 'aurora_091',
+        #'HOST': '207.38.86.11',
     }
 }
 
