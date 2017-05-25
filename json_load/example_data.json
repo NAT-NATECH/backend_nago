@@ -1,0 +1,32 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$20000$T4YnkG9O4Sbr$sqlGdwtiwtSWNiAPnDMN8d+DzHGnsDoCYbN3YN8GtZI=",
+      "is_superuser": "t",
+      "username":"andreacent",
+      "first_name": "Andrea",
+      "last_name": "Centeno",
+      "email": "andreacent8@gmail.com",
+      "is_active" : "t",
+      "is_staff": "t"
+    }
+  },
+
+  {
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$20000$T4YnkG9O4Sbr$sqlGdwtiwtSWNiAPnDMN8d+DzHGnsDoCYbN3YN8GtZI=",
+      "is_superuser": "t",
+      "username":"neo",
+      "first_name": "Jose",
+      "last_name": "Patino",
+      "email": "neojdpm@gmail.com",
+      "is_active" : "t",
+      "is_staff": "t"
+    }
+  }
+
+]
