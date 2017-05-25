@@ -108,3 +108,5 @@ bin/
 include/
 pip-selfcheck.json
 local/
+
+static/bower_components/*

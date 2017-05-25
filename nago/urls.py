@@ -1,10 +1,11 @@
 from django.conf.urls import url, include
-from django.conf.urls import url
-from django.contrib import admin
-
-from server import urls
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^', include('server.urls'))
+    url(r'^', include('server.urls')),
+    ## Backoffice module's URLs
+    url(r'^backoffice/', include('backoffice.urls'), name='BackofficeApp'),
+    ## Login/Loguot
+    url(r'^accounts/login/$', auth_views.login, {'template_name': 'backoffice/login.html'}),
+    url(r'^accounts/logout/$', auth_views.logout, {'next_page': 'login'})
 ]

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load adminTags %}
+
+{% block title %}{% if Title %}{{Title}}{% else %}Admin{% endif %}{% endblock %}
+
+{% block custom_css %}{% endblock %}
+
+{% block msg %}
+{% for message in messages %}
+    {% bootstrap_mt message.tags as btag %}
+    <div class="alert alert-{{ btag }}">{{ message }}</div>
+{% endfor %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block custom_script %}{% endblock %}

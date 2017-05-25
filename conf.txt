@@ -13,3 +13,8 @@ GRANT ALL PRIVILEGES ON DATABASE nago_db TO nago_admin;
 ---------- REQUIREMENTS ----------
 
 pip install -r requirements.txt
+
+---------- STATICS ----------
+
+cd static
+bower install
