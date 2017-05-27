@@ -1,5 +1,10 @@
-{% extends 'backoffice/base_backoffice.html' %}
+{% extends 'backoffice/base.html' %}
 
 {% block content %}
   <h2>Welcome, {{ user.get_full_name }} <small>{{ user.username }}</small>!</h2>
+
+  <ul>
+  	<li><a href="{% url 'PersonCreate' %}">Crear usuario</a></li>
+  	<li><a href="{% url 'PersonList' %}">Listar usuarios</a></li>
+  </ul>
 {% endblock %}

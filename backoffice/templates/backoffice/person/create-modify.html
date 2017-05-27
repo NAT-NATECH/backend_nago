@@ -1,0 +1,63 @@
+{% extends "backoffice/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<h3>{{Title}}</h3>
+
+<form method="post" accept-charset="utf-8" class="form-group" role="form" enctype="multipart/form-data">
+  {% csrf_token %}
+  <table >
+    {% for field in UserForm %}
+      <tr>
+        <td><b>{{field.label}} : </b></td>
+        <td>{{ field }}
+          <span class="error" id="{{ field.name }}-icon"></span>
+          <span class='error' id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
+        </td>
+      </tr>
+    {% endfor %}
+    {% for field in PersonForm %}
+      <tr>
+        <td><b>{{field.label}} : </b></td>
+        <td>{{ field }}
+          <span class="error" id="{{ field.name }}-icon"></span>
+          <span class='error' id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
+        </td>
+      </tr>
+    {% endfor %}
+    <tr>
+  </table>
+  <button type="submit" class="btn">Guardar</button>
+  {% if pk %}
+    <button type="button" id="btn-delete" class="btn" >Eliminar</button>
+  {% endif%}
+</form>
+
+{% endblock %}
+
+{% block custom_script %}
+<script>
+  $(document).ready(function() {
+      $("#btn-delete").click(function(){
+        $.ajax({
+          data : {'pk': {{pk}}, csrfmiddlewaretoken: '{{ csrf_token }}'},
+          url : '/persondeleteajax/',
+          type : 'POST',     
+          success : function(data){
+            console.log(data);
+            if(data.deleted == 1){
+              window.location.href = "{% url 'PersonList' %}";
+            }else{
+              location.reload();
+            }
+          },
+          error : function(data){
+            console.log("ERROR: Person delete ajax ");
+          }
+        });
+      });
+  });
+</script>
+
+{% endblock %} 

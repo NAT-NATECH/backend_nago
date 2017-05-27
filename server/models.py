@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
@@ -17,15 +18,15 @@ class Person(models.Model):
 		return os.path.join(path, name_file)
 	'''
 
-	code = models.CharField(max_length=10,null=True, blank=True)
+	code = models.CharField("Código",max_length=10,null=True, blank=True)
 	num_visit = models.IntegerField()
-	description = models.CharField(max_length=100,null=True ,blank=True)
-	name = models.CharField(max_length=100, null=True, blank=True)
-	lastname = models.CharField(max_length=100, null=True, blank=True)
-	birthdate = models.DateTimeField(auto_now_add=False, null=True, blank=True)
-	telephone = models.CharField(max_length=30, null=True, blank=True)
+	description = models.CharField("Descripción",max_length=100,null=True ,blank=True)
+	name = models.CharField("Nombre",max_length=100, null=True, blank=True)
+	lastname = models.CharField("Apellido",max_length=100, null=True, blank=True)
+	birthdate = models.DateTimeField("Fecha de nacimiento",auto_now_add=False, null=True, blank=True)
+	telephone = models.CharField("Teléfono",max_length=30, null=True, blank=True)
 	pin = models.CharField(max_length=100, null=True, blank=True)
-	img_profile = models.ImageField(upload_to="profile/", null=True, blank=True)
+	img_profile = models.ImageField("Imagen de perfil",upload_to="profile/", null=True, blank=True)
 	fk_user = models.ForeignKey(User, null=False)
 
 # state=1 friends | state=2 canceled | state=0 process
