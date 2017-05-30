@@ -8,8 +8,8 @@ from django.contrib import messages
 from braces.views import LoginRequiredMixin,StaffuserRequiredMixin
 from django.views.generic import TemplateView, View
 #Project
-from server.models import Person
-from backoffice.forms import UserForm,PersonForm,UserModifyForm
+from server.models import Person,Request_Loans
+from backoffice.forms import UserForm,PersonForm,UserModifyForm,ReportDatesForm
 
 class Home(LoginRequiredMixin, StaffuserRequiredMixin, TemplateView):
     """
@@ -92,3 +92,35 @@ class PersonDeleteAjax(LoginRequiredMixin,StaffuserRequiredMixin,View):
             data={'deleted' : 0}
         
         return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+##########################################################################
+
+class TransactionSearch(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
+    """
+    Search a Payment 
+    """
+
+    template_name = 'backoffice/transaction/search.html'
+    title = 'Buscar Request_Loans'
+
+    def get_context_data(self, **kwargs):
+        context = super(TransactionSearch, self).get_context_data(**kwargs)
+        context['form'] = ReportDatesForm()
+        context['Title'] = self.title
+        return context
+
+    def post(self, request, *args, **kwargs):
+        post_values = request.POST.copy()
+
+        form = ReportDatesForm(post_values)
+        context = {'Title':self.title,'form':form}
+
+        if form.is_valid():
+            #debe filtrarse por fecha
+            trans = Request_Loans.objects.filter(date_create__range=(post_values['date_from'],post_values['date_to']))
+            context['trans'] = trans
+        else:
+            messages.add_message(request, messages.ERROR, 'Error: no se realizo la operación')
+
+        return render(request, self.template_name,context)

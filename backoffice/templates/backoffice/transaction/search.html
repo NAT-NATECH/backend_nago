@@ -1,0 +1,66 @@
+{% extends "backoffice/base.html" %}
+{% load static %}
+
+{% block custom_css %}
+  <link href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<section>
+  <h3>{{Title}}</h3>
+
+  <form method="post" accept-charset="utf-8" class="form-group" role="form" id="form-search">
+    {% csrf_token %}
+    <table >
+      {% for field in form %}
+      <tr>
+        <td><b>{{field.label}} : </b></td>
+        <td>{{ field }}
+          <span class="error" id="{{ field.name }}-icon"></span>
+          <span class='error' id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    <button type="submit" class="btn" >Buscar</button>
+  </form>
+
+  {% if trans %}
+  <table id="table-trans">
+    {% for t in trans %}
+      <tr>
+        <td>{{t.amount_request}}</td>
+        <td>{{t.amount_available}}</td>
+        <td>{{t.interest}}</td>
+        <td>{{t.date_return}}</td>
+        <td>{{t.date_expiration}}</td>
+        <td>{{t.deadline}}</td>
+        <td>{{t.date_create}}</td>
+        <td>{{t.commentary}}</td>
+        <td>{{t.state}}</td>
+        <td>{{t.fk_person.get_full_name}}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+</section>
+
+{% endblock %}
+
+{% block custom_script %}
+<script type="text/javascript" src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+<script>
+  $(document).ready(function() {
+    //Datepicker
+    $('.datepicker').datepicker({
+      //format: 'mm-dd-yyyy',
+      endDate: '+0d',
+      autoclose: true
+    }).on('changeDate', function(e){
+        $(this).datepicker('hide');
+    });
+  });
+</script>
+
+{% endblock %}  

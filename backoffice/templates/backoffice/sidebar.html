@@ -17,4 +17,13 @@
       <a href="{% url 'PersonList' %}" class="list-group-item">Listar</a>
     </div>
   </div>
+
+  <div class="list-group" id="accordion">
+    <a class="list-group-item bo-item-nav" data-toggle="collapse" data-parent="#accordion" href="#num2">
+      <i class="fa fa-users" aria-hidden="true"></i>Otro 
+    </a>
+    <div class="collapse" id="num2">
+      <a href="{% url 'TransactionSearch' %}" class="list-group-item">Request_Loans</a>
+    </div>
+  </div>
 </div>
