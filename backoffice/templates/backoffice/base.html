@@ -1,18 +1,53 @@
 {% extends "base.html" %}
-{% load adminTags %}
+{% load static adminTags %}
 
 {% block title %}{% if Title %}{{Title}}{% else %}Admin{% endif %}{% endblock %}
 
-{% block custom_css %}{% endblock %}
+{% block base_css %}
+  <link rel="stylesheet" href="{% static 'backoffice/css/base.css' %}" />
+  <link rel="stylesheet" href="{% static 'backoffice/css/sidebar.css' %}" />
+
+  {% block custom_css %}{% endblock %}
+{% endblock %}
 
 {% block msg %}
-{% for message in messages %}
+  {% for message in messages %}
     {% bootstrap_mt message.tags as btag %}
-    <div class="alert alert-{{ btag }}">{{ message }}</div>
-{% endfor %}
+    <div id="bo-alert" class="alert alert-{{ btag }}">{{ message }}</div>
+  {% endfor %}
 {% endblock %}
 
-{% block content %}
+{% block navbar %}
+  {% include "backoffice/navbar.html" %}
+  {% if user.is_authenticated %}
+    {% include "backoffice/sidebar.html" %}
+  {% endif %}
 {% endblock %}
 
-{% block custom_script %}{% endblock %}
+{% block base_content %}
+  <div id="bo-content">
+    {% block content %}
+    {% endblock %}
+  </div>
+{% endblock %}
+
+{% block base_script %}
+  <script type="text/javascript">
+    $(document).ready(function() {
+      //Cerrar desplegable del menu
+      $('#accordion .collapse').on('show.bs.collapse', function (e) {
+        var actives = $('#accordion').find('.in, .collapsing');
+        actives.each( function (index, element) {
+            $(element).collapse('hide');
+        })
+      })
+
+      $("#bo-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#bo-alert").slideUp(500);
+      });
+    });
+  </script>
+
+  {% block custom_script %}{% endblock %}
+
+{% endblock %}

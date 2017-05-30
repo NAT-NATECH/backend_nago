@@ -92,4 +92,3 @@ class PersonDeleteAjax(LoginRequiredMixin,StaffuserRequiredMixin,View):
             data={'deleted' : 0}
         
         return HttpResponse(json.dumps(data), content_type='application/json')
-        #return HttpResponseRedirect('PersonList')

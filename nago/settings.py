@@ -130,6 +130,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'staticfiles'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
+    ('backoffice', os.path.join(BASE_DIR, 'backoffice', 'static')),
     '/var/www/static/',
 ]
 MEDIA_URL = '/media/'
@@ -140,3 +141,5 @@ EMAIL_HOST_USER = 'mandala_email'
 EMAIL_HOST_PASSWORD = 'Vito_Corleone0'
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
+
+LOGIN_REDIRECT_URL= "/"

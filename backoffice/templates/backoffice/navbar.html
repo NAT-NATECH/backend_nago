@@ -1,0 +1,17 @@
+<nav class="navbar navbar-inverse navbar-fixed-top bo-navbar">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Nago</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="{% url 'backoffice' %}">Home</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      {% if user.is_authenticated %}
+      <li><a href="{% url 'logout' %}">Cerrar session</a></li>
+      {% else %}
+      <li><a href="{% url 'loginBO' %}">Iniciar sesion</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

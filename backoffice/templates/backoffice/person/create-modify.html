@@ -37,6 +37,8 @@
 {% endblock %}
 
 {% block custom_script %}
+
+{% if pk %}
 <script>
   $(document).ready(function() {
       $("#btn-delete").click(function(){
@@ -59,5 +61,6 @@
       });
   });
 </script>
+{% endif%}
 
 {% endblock %} 

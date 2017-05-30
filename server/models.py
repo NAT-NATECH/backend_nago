@@ -27,7 +27,7 @@ class Person(models.Model):
 	telephone = models.CharField("Teléfono",max_length=30, null=True, blank=True)
 	pin = models.CharField(max_length=100, null=True, blank=True)
 	img_profile = models.ImageField("Imagen de perfil",upload_to="profile/", null=True, blank=True)
-	fk_user = models.ForeignKey(User, null=False)
+	fk_user = models.OneToOneField(User, on_delete=models.CASCADE)
 
 # state=1 friends | state=2 canceled | state=0 process
 class Friend(models.Model):
