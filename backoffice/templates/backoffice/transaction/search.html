@@ -26,24 +26,105 @@
     <button type="submit" class="btn" >Buscar</button>
   </form>
 
-  {% if trans %}
-  <table id="table-trans">
-    {% for t in trans %}
+  {% if request_Loans %}
+  <h3>Pedidos de prestamo</h3>
+  <table class="table table-nago">
+    <tr>
+      <th>request_loans ID</th>
+      <th>amount_request</th>
+      <th>amount_available</th>
+      <th>interest</th>
+      <th>date_return</th>
+      <th>date_expiration</th>
+      <th>deadline</th>
+      <th>date_create</th>
+      <th>commentary</th>
+      <th>state</th>
+      <th>fk_person</th>
+    </tr>
+    {% for t in request_Loans %}
       <tr>
+        <td>{{t.id}}</td>
         <td>{{t.amount_request}}</td>
         <td>{{t.amount_available}}</td>
         <td>{{t.interest}}</td>
         <td>{{t.date_return}}</td>
-        <td>{{t.date_expiration}}</td>
-        <td>{{t.deadline}}</td>
-        <td>{{t.date_create}}</td>
+        <td>{{t.date_expiration|date:"d/m/Y"}}</td>
+        <td>{{t.deadline|date:"d/m/Y"}}</td>
+        <td>{{t.date_create|date:"d/m/Y"}}</td>
         <td>{{t.commentary}}</td>
         <td>{{t.state}}</td>
-        <td>{{t.fk_person.get_full_name}}</td>
+        <td>{{t.fk_person.fk_user.get_full_name}}</td>
       </tr>
     {% endfor %}
   </table>
   {% endif %}
+
+  {% if loans %}
+  <h3>Prestamos</h3>
+  <table class="table table-nago">
+    <tr>
+      <th rowspan="3">loan ID</th>
+      <th rowspan="3">amount_loan</th>
+      <th rowspan="3">amount_interest</th>
+      <th rowspan="3">state</th>
+      <th colspan="4">fk_friend_loans</th>
+    </tr>
+    <tr>
+      <th rowspan="2">state</th>
+      <th rowspan="2">request_loans ID</th>
+      <th colspan="2">fk_friends</th>
+    </tr>
+    <tr>
+      <th>person name</th>
+      <th>person_friend name</th>
+    </tr>
+    {% for t in loans %}
+      <tr>
+        <td>{{t.id}}</td>
+        <td>{{t.amount_loan}}</td>
+        <td>{{t.amount_interest}}</td>
+        <td>{{t.state}}</td>
+        <td>{{t.fk_friend_loans.state}}</td>
+        <td>{{t.fk_friend_loans.fk_request_loans.id}}</td>
+        <td>{{t.fk_friend_loans.fk_friends.fk_person.fk_user.get_full_name}}</td>
+        <td>{{t.fk_friend_loans.fk_friends.fk_person_friend.fk_user.get_full_name}}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  {% if notifications %}
+  <h3>Notificaciones</h3>
+  <table class="table table-nago">
+    <tr>
+      <th rowspan="2">message</th>
+      <th rowspan="2">num</th>
+      <th rowspan="2">state</th>
+      <th colspan="2">fk_friends</th>
+      <th rowspan="2">loans ID</th>
+      <th rowspan="2">request_loans ID</th>
+      <th rowspan="2">person name</th>
+    </tr>
+    <tr>
+      <th>person name</th>
+      <th>person_friend name</th>
+    </tr>
+    {% for t in notifications %}
+      <tr>
+        <td>{{t.message}}</td>
+        <td>{{t.num}}</td>
+        <td>{{t.state}}</td>
+        <td>{{t.fk_friends.fk_person.fk_user.get_full_name}}</td>
+        <td>{{t.fk_friends.fk_person_friend.fk_user.get_full_name}}</td>
+        <td>{{t.fk_loans.id}}</td>
+        <td>{{t.fk_request_loans.id}}</td>
+        <td>{{t.fk_person.fk_user.get_full_name}}</td>
+      </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
 </section>
 
 {% endblock %}

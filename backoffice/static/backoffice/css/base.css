@@ -16,3 +16,10 @@ body,html{
 	position: fixed;
 	width: 100%;
 }
+
+/* TABLES */
+.table-nago th{
+    text-align: center;
+    background-color: #FCF9F9;
+    vertical-align: middle !important;
+}

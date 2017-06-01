@@ -8,7 +8,7 @@ from django.contrib import messages
 from braces.views import LoginRequiredMixin,StaffuserRequiredMixin
 from django.views.generic import TemplateView, View
 #Project
-from server.models import Person,Request_Loans
+from server.models import Person,Request_Loans,Friends_Loans,Loans,Notification
 from backoffice.forms import UserForm,PersonForm,UserModifyForm,ReportDatesForm
 
 class Home(LoginRequiredMixin, StaffuserRequiredMixin, TemplateView):
@@ -98,11 +98,11 @@ class PersonDeleteAjax(LoginRequiredMixin,StaffuserRequiredMixin,View):
 
 class TransactionSearch(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
     """
-    Search a Payment 
+    Search Request_Loans , Loans and Notification
     """
 
     template_name = 'backoffice/transaction/search.html'
-    title = 'Buscar Request_Loans'
+    title = 'Buscar transacciones'
 
     def get_context_data(self, **kwargs):
         context = super(TransactionSearch, self).get_context_data(**kwargs)
@@ -118,8 +118,13 @@ class TransactionSearch(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
 
         if form.is_valid():
             #debe filtrarse por fecha
-            trans = Request_Loans.objects.filter(date_create__range=(post_values['date_from'],post_values['date_to']))
-            context['trans'] = trans
+            request_Loans = Request_Loans.objects.filter(date_create__range=(post_values['date_from'],post_values['date_to']))
+            loans = Loans.objects.filter(
+                        fk_friend_loans__in=Friends_Loans.objects.filter(fk_request_loans__in=request_Loans))
+            notifications = Notification.objects.filter(fk_loans__in=loans)
+            context['request_Loans'] = request_Loans
+            context['loans'] = loans
+            context['notifications'] = notifications
         else:
             messages.add_message(request, messages.ERROR, 'Error: no se realizo la operación')
 
