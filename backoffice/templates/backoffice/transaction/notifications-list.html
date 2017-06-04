@@ -2,55 +2,70 @@
 {% load static %}
 
 {% block custom_css %}
+<link href="{% static 'bower_components/datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+<link href="{% static 'bower_components/datatables.net-responsive-dt/css/responsive.dataTables.min.css' %}" rel="stylesheet">
 <link href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block content-bar-list %}
 <li><a href="{% url 'LoansList' %}">Prestamos</a></li>
 <li><a href="{% url 'LoansRequestList' %}">Solicitudes</a></li>
-<li class="active"><a href="#">Notificaciones</a></li>
+<li class="active"><a href="{% url 'NotificationList' %}">Notificaciones</a></li>
+
 {% endblock %}
 
-{% block content %}
+{% block content-bar-list-right %} 
 
 <!--FILRO POR FECHAS-->
-<form method="post" accept-charset="utf-8" class="form-inline" role="form" id="form-search">
+<form method="post" accept-charset="utf-8" class="form-inline form-filter" role="form" id="form-search">
   {% csrf_token %}
-  Filtrar por fecha 
+  Filtrar  
   {% for field in dateRangeForm %}
     <div class="form-group">{{field.label}} {{ field }} {{ field.errors }}</div>
   {% endfor %}
 
   <button type="submit" class="btn" >Buscar</button>
-  <a href="{% url 'NotificationList' %}"><button type="button" class="btn" >Mostrar todas</button></a>
 </form>
-<!--/FILRO POR FECHAS-->
+<!--/FILRO POR FECHAS-->  
+{% endblock %}
+
+{% block content %}
+
 
 <h3>{{Title}}</h3>
-<table class="table">
-  <tr>
-    <th>ID</th>
-    <th>Usuario</th>
-    <th>Fecha</th>
-    <th>Tipo</th>
-    <th>Mensaje</th>
-  </tr>
-  {% for t in objects %}
-    <tr>
-      <td><a href="{% url 'NotificationShow' t.id %}">{{t.id}}</a></td>
-      <td>{{t.user.get_full_name}}</td>
-      <td>{{t.date|date:"d/m/Y"}}</td>
-      <td>{{t.get_about_display}}</td>
-      <td>{{t.message}}</td>
-    </tr>
-  {% endfor %}
-</table>
+
+<div class="bo-dt-content form-inline">
+  <table class="bo-datatable dt-responsive nowrap">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Usuario</th>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Mensaje</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for t in objects %}
+      <tr>
+        <td><a href="{% url 'NotificationShow' t.id %}">{{t.id}}</a></td>
+        <td>{{t.user.get_full_name}}</td>
+        <td>{{t.date|date:"d/m/Y"}}</td>
+        <td>{{t.get_about_display}}</td>
+        <td>{{t.message}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 {% endblock %}
 
-
 {% block custom_script %}
 <script type="text/javascript" src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'backoffice/js/datatable.js' %}"></script>
 
 <script>
   $(document).ready(function() {

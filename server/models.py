@@ -32,7 +32,7 @@ class Friendship(models.Model):
             raise ValidationError({'key':'Esta relación la existe.'})
 
     def __str__(self):
-        return self.friend1.get_full_name() + ", " + self.friend2.get_full_name()
+        return self.friend1.get_full_name() + " y " + self.friend2.get_full_name()
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,verbose_name='ID de Usuario')

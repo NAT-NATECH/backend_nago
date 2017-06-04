@@ -46,7 +46,8 @@ class DateRangeForm(forms.Form):
         for key in self.fields:
             self.fields[key].widget.attrs.update({
                 'class': 'datepicker form-control',
-                'data-date-format':'yyyy-mm-dd'
+                'data-date-format':'yyyy-mm-dd',
+                'style':'max-width:120px;'
             })
 
 #############################################################

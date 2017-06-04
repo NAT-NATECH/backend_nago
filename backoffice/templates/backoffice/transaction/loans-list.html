@@ -1,6 +1,11 @@
 {% extends "backoffice/base.html" %}
 {% load static %}
 
+{% block custom_css %}
+<link href="{% static 'bower_components/datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+<link href="{% static 'bower_components/datatables.net-responsive-dt/css/responsive.dataTables.min.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content-bar-list %} 
   <li class="active"><a href="#">Prestamos</a></li>
   <li><a href="{% url 'LoansRequestList' %}">Solicitudes</a></li>
@@ -11,25 +16,39 @@
 
 <h3>{{Title}}</h3>
 
-<table class="table">
-  <tr>
-    <th>ID</th>
-    <th>Origen</th>
-    <th>Destino</th>
-    <th>Monto</th>
-    <th>Interes</th>
-    <th>ID solicitud</th>
-  </tr>
-  {% for l in objects %}
-    <tr>
-      <td><a href="{% url 'LoansShow' l.id %}">{{l.id}}</a></td>
-      <td>{{l.loan_request.get_lender.get_full_name}}</td>
-      <td>{{l.loan_request.user.get_full_name}}</td>
-      <td>{{l.amount_loan}}</td>
-      <td>{{l.amount_interest}}</td>
-      <td><a href="{% url 'LoansRequestShow' l.loan_request.id %}">{{l.loan_request.id}}</a></td>
-    </tr>
-  {% endfor %}
-</table>
+<div class="bo-dt-content form-inline">
+  <table class="bo-datatable dt-responsive nowrap">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Origen</th>
+        <th>Destino</th>
+        <th>Monto</th>
+        <th>Interes</th>
+        <th>ID solicitud</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in objects %}
+        <tr>
+          <td><a href="{% url 'LoansShow' l.id %}">{{l.id}}</a></td>
+          <td>{{l.loan_request.get_lender.get_full_name}}</td>
+          <td>{{l.loan_request.user.get_full_name}}</td>
+          <td>{{l.amount_loan}}</td>
+          <td>{{l.amount_interest}}</td>
+          <td><a href="{% url 'LoansRequestShow' l.loan_request.id %}">{{l.loan_request.id}}</a></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 {% endblock %}
+
+
+{% block custom_script %}
+<script type="text/javascript" charset="utf8" src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" charset="utf8" src="{% static 'bower_components/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'backoffice/js/datatable.js' %}"></script>
+
+{% endblock %} 

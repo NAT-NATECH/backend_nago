@@ -17,7 +17,7 @@ body,html{
 
 #bo-content-body{
     margin: auto;
-    width: 94%;
+    width: 96%;
 }
 
 #bo-alert{
@@ -27,9 +27,20 @@ body,html{
 	width: 100%;
 }
 
+.form-filter{
+    margin-top: 8px;
+    margin-right: 20px;
+}
+
 th.th-colspan{
     text-align: center;
 }
+
 .bo-table th{
     background-color: #f8f8f8;
+}
+
+/********** DATATABLES **********/
+.bo-dt-content label{
+    font-weight: normal;
 }
