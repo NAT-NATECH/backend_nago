@@ -1,6 +1,16 @@
 {% extends "backoffice/base.html" %}
 {% load static %}
 
+{% block content-bar-list %} 
+  {% if pk %} 
+      <li class="active"><a href="#">Modificar</a></li>
+      <li><a href="{% url 'UserFriendsList' pk %}">Listar amigos</a></li>
+  {% else %} 
+      <li class="active"><a href="#">Crear</a></li>
+      <li><a href="{% url 'UserList' %}">Listar</a></li>
+  {% endif%}  
+{% endblock %}
+
 {% block content %}
 
 <h3>{{Title}}</h3>
@@ -10,22 +20,14 @@
   <table >
     {% for field in UserForm %}
       <tr>
-        <td><b>{{field.label}} : </b></td>
+        <td><b>{{field.label}}: </b></td>
         <td>{{ field }}
           <span class="error" id="{{ field.name }}-icon"></span>
           <span class='error' id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
         </td>
       </tr>
     {% endfor %}
-    {% for field in PersonForm %}
-      <tr>
-        <td><b>{{field.label}} : </b></td>
-        <td>{{ field }}
-          <span class="error" id="{{ field.name }}-icon"></span>
-          <span class='error' id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
-        </td>
-      </tr>
-    {% endfor %}
+    {{ ProfileForm.as_table }}
     <tr>
   </table>
   <button type="submit" class="btn">Guardar</button>
@@ -44,18 +46,18 @@
       $("#btn-delete").click(function(){
         $.ajax({
           data : {'pk': {{pk}}, csrfmiddlewaretoken: '{{ csrf_token }}'},
-          url : '/persondeleteajax/',
+          url : '/userdeleteajax/',
           type : 'POST',     
           success : function(data){
             console.log(data);
             if(data.deleted == 1){
-              window.location.href = "{% url 'PersonList' %}";
+              window.location.href = "{% url 'UserList' %}";
             }else{
               location.reload();
             }
           },
           error : function(data){
-            console.log("ERROR: Person delete ajax ");
+            console.log("ERROR: User delete ajax ");
           }
         });
       });

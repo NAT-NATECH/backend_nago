@@ -26,8 +26,21 @@
 
 {% block base_content %}
   <div id="bo-content">
-    {% block content %}
+    {% block content-bar %}  
+      <nav class="bo-content-bar navbar navbar-default">
+        <div class="container-fluid">
+          <ul class="nav navbar-nav">
+            {% block content-bar-list %}   
+            {% endblock %}
+          </ul>
+        </div>
+      </nav>  
     {% endblock %}
+
+    <div id="bo-content-body">
+      {% block content %}
+      {% endblock %}
+    </div>
   </div>
 {% endblock %}
 
@@ -41,7 +54,8 @@
             $(element).collapse('hide');
         })
       })
-
+      
+      //Mensaje de alerta 
       $("#bo-alert").fadeTo(2000, 500).slideUp(500, function(){
         $("#bo-alert").slideUp(500);
       });

@@ -10,6 +10,10 @@
     padding-top: 20px;
     overflow-y : auto; 
 }
+#bo-Menu .list-group{
+    margin-bottom: 0;
+}
+
 #bo-Menu .list-group-item{
 	border:0;
 	background-color: #357DA3;

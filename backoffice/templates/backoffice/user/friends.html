@@ -1,0 +1,31 @@
+{% extends "backoffice/base.html" %}
+{% load static %}
+
+{% block content-bar-list %} 
+  <li><a href="{% url 'UserModify' pk %}">Modificar</a></li>
+  <li class="active"><a href="#">Listar amigos</a></li>
+{% endblock %}
+
+{% block content %}
+
+<h3>{{Title}}</h3>
+
+{% if friends %}
+<table class="table table-condensed">
+  <tr>
+    <th>ID</th>
+    <th>Nombre</th>
+  </tr>
+  <tr>
+    {% for u in friends %}
+    <td>{{ u.id }}</td> 
+    <td>{{ u.get_full_name }}</td>
+    {% endfor %}
+  </tr>
+</table>
+
+{% else %}
+  No tiene amistades.
+{% endif %}
+
+{% endblock %}

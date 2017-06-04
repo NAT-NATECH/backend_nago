@@ -1,0 +1,19 @@
+{% extends "backoffice/base.html" %}
+{% load static %}
+
+{% block content-bar-list %} 
+  <li><a href="{% url 'UserCreate' %}">Crear</a></li>
+  <li class="active"><a href="#">Listar</a></li>
+{% endblock %}
+
+{% block content %}
+
+<h3>{{Title}}</h3>
+
+<ul>
+  {% for u in users %}
+  <li><a href="{% url 'UserModify' u.pk %}">{{ u.get_full_name}}</a></li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

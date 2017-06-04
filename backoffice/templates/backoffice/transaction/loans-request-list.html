@@ -1,0 +1,83 @@
+{% extends "backoffice/base.html" %}
+{% load static %}
+
+{% block custom_css %}
+<link href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content-bar-list %}
+  <li><a href="{% url 'LoansList' %}">Prestamos</a></li>
+  <li class="active"><a href="#">Solicitudes</a></li>
+  <li><a href="{% url 'NotificationList' %}">Notificaciones</a></li>
+{% endblock %}
+
+{% block content %}
+
+<!--FILRO POR FECHAS-->
+<form method="post" accept-charset="utf-8" class="form-inline" role="form" id="form-search">
+  {% csrf_token %}
+  
+  {% for field in dateTypeForm %}
+    <div class="form-group">{{field.label}} {{ field }} {{ field.errors }}</div>
+  {% endfor %}
+  {% for field in dateRangeForm %}
+    <div class="form-group">{{field.label}} {{ field }} {{ field.errors }}</div>
+  {% endfor %}
+
+  <button type="submit" class="btn" >Buscar</button>
+  <a href="{% url 'LoansRequestList' %}"><button type="button" class="btn" >Mostrar todas</button></a>
+</form>
+<!--/FILRO POR FECHAS-->
+
+<h3>{{Title}}</h3>
+<table class="table">
+  <tr>
+    <th>ID</th>
+    <th>Deudor</th>
+    <th>Prestamista</th>
+    <th>Monto solicitado</th>
+    <th>Monto disponible</th>
+    <th>Interes</th>
+    <th>F. Creación</th>
+    <th>F. Expiración</th>
+    <th>F. Limite</th>
+    <th>Estado</th>
+    <th>Comentario</th>
+  </tr>
+  {% for t in objects %}
+    <tr>
+      <td><a href="{% url 'LoansRequestShow' t.id %}">{{t.id}}</a></td>
+      <td>{{t.user.get_full_name}}</td>
+      <td>{{t.get_lender.get_full_name}}</td>
+      <td>{{t.amount_request}}</td>
+      <td>{{t.amount_available}}</td>
+      <td>{{t.interest}}</td>
+      <td>{{t.date_create|date:"d/m/Y"}}</td>
+      <td>{{t.date_expiration|date:"d/m/Y"}}</td>
+      <td>{{t.deadline|date:"d/m/Y"}}</td>
+      <td>{{t.state}}</td>
+      <td>{{t.commentary}}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
+
+
+{% block custom_script %}
+<script type="text/javascript" src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+
+<script>
+  $(document).ready(function() {
+    //Datepicker
+    $('.datepicker').datepicker({
+      //format: 'mm-dd-yyyy',
+      endDate: '+0d',
+      autoclose: true
+    }).on('changeDate', function(e){
+        $(this).datepicker('hide');
+    });
+  });
+</script>
+
+{% endblock %} 

@@ -27,6 +27,101 @@
       "is_active" : "t",
       "is_staff": "t"
     }
-  }
+  },
 
+  {
+    "model": "server.friendship",
+    "pk": 1,
+    "fields": {
+      "friend1_id": "1",
+      "friend2_id": "2"
+    }
+  },
+
+  {
+    "model": "server.loanrequest",
+    "pk": 1,
+    "fields": {
+      "user_id": "1",
+      "friendship_id": "1",
+      "amount_available": 120,
+      "amount_request": 200,
+      "interest":10,
+      "date_return":2,
+      "date_expiration":"2017-06-06",
+      "deadline":"2017-06-08",
+      "date_create":"2017-06-03",
+      "commentary":"hola"
+    }
+  },
+
+  {
+    "model": "server.loanrequest",
+    "pk": 2,
+    "fields": {
+      "user_id": "2",
+      "friendship_id": "1",
+      "amount_available": 420,
+      "amount_request": 500,
+      "interest":10,
+      "date_return":2,
+      "date_expiration":"2017-05-06",
+      "deadline":"2017-05-08",
+      "date_create":"2017-05-03",
+      "commentary":"hola"
+    }
+  },
+
+  {
+    "model": "server.loan",
+    "pk": 1,
+    "fields": {
+      "loan_request_id": "1",
+      "amount_loan": 200,
+      "amount_interest":10
+    }
+  },
+
+  {
+    "model": "server.loan",
+    "pk": 2,
+    "fields": {
+      "loan_request_id": "2",
+      "amount_loan": 400,
+      "amount_interest":20
+    }
+  },
+
+  {
+    "model": "server.notification",
+    "pk": 1,
+    "fields": {
+      "message": "friendship",
+      "about": "F",
+      "friendship_id":"1",
+      "user_id":"1"
+    }
+  },
+
+  {
+    "model": "server.notification",
+    "pk": 2,
+    "fields": {
+      "message": "loans",
+      "about": "L",
+      "loans_id":"1",
+      "user_id":"1"
+    }
+  },
+
+  {
+    "model": "server.notification",
+    "pk": 3,
+    "fields": {
+      "message": "request_loans",
+      "about": "RL",
+      "request_loans_id":"1",
+      "user_id":"1"
+    }
+  }
 ]

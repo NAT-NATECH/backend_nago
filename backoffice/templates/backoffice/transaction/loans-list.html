@@ -1,0 +1,35 @@
+{% extends "backoffice/base.html" %}
+{% load static %}
+
+{% block content-bar-list %} 
+  <li class="active"><a href="#">Prestamos</a></li>
+  <li><a href="{% url 'LoansRequestList' %}">Solicitudes</a></li>
+  <li><a href="{% url 'NotificationList' %}">Notificaciones</a></li>
+{% endblock %}
+
+{% block content %}
+
+<h3>{{Title}}</h3>
+
+<table class="table">
+  <tr>
+    <th>ID</th>
+    <th>Origen</th>
+    <th>Destino</th>
+    <th>Monto</th>
+    <th>Interes</th>
+    <th>ID solicitud</th>
+  </tr>
+  {% for l in objects %}
+    <tr>
+      <td><a href="{% url 'LoansShow' l.id %}">{{l.id}}</a></td>
+      <td>{{l.loan_request.get_lender.get_full_name}}</td>
+      <td>{{l.loan_request.user.get_full_name}}</td>
+      <td>{{l.amount_loan}}</td>
+      <td>{{l.amount_interest}}</td>
+      <td><a href="{% url 'LoansRequestShow' l.loan_request.id %}">{{l.loan_request.id}}</a></td>
+    </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}

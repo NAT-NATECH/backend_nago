@@ -1,8 +1,8 @@
 <div id="bo-Menu">
   <div id="bo-user">
     <span>{{ user.get_full_name }}</span>
-    {% if user.person.img_profile %}
-    <img src="{{request.user.userattributes.foto.url}}" alt="">  
+    {% if user.profile.image %}
+    <img src="{{user.profile.image.url}}">  
     {% else %}
     <div class="no-image"></div>
     {% endif %}
@@ -13,17 +13,19 @@
       <i class="fa fa-users" aria-hidden="true"></i>Usuarios
     </a>
     <div class="collapse" id="num1">
-      <a href="{% url 'PersonCreate' %}" class="list-group-item">Crear nuevo</a>
-      <a href="{% url 'PersonList' %}" class="list-group-item">Listar</a>
+      <a href="{% url 'UserCreate' %}" class="list-group-item">Crear nuevo</a>
+      <a href="{% url 'UserList' %}" class="list-group-item">Listar</a>
     </div>
   </div>
 
   <div class="list-group" id="accordion">
     <a class="list-group-item bo-item-nav" data-toggle="collapse" data-parent="#accordion" href="#num2">
-      <i class="fa fa-users" aria-hidden="true"></i>Otro 
+      <i class="fa fa-tasks" aria-hidden="true"></i>Transacciones
     </a>
     <div class="collapse" id="num2">
-      <a href="{% url 'TransactionSearch' %}" class="list-group-item">Request_Loans</a>
+      <a href="{% url 'LoansList' %}" class="list-group-item">Prestamos</a>
+      <a href="{% url 'LoansRequestList' %}" class="list-group-item">Solicitudes</a>
+      <a href="{% url 'NotificationList' %}" class="list-group-item">Notificaciones</a>
     </div>
   </div>
 </div>

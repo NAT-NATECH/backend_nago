@@ -1,0 +1,56 @@
+{% extends "backoffice/base.html" %}
+{% load static %}
+
+{% block content-bar-list %} 
+  <li><a href="{% url 'LoansList' %}">Prestamos</a></li>
+  <li><a href="{% url 'LoansRequestList' %}">Solicitudes</a></li>
+  <li><a href="{% url 'NotificationList' %}">Notificaciones</a></li>
+  <li><a href="{{request.META.HTTP_REFERER}}">Volver</a></li>
+{% endblock %}
+
+{% block content %}
+
+<h3>Visualizar {{Title}} {{pk}}</h3>
+
+<table class="table-condensed bo-table">
+  {% for field in object %}  
+    {% if field.value %}
+      <tr>
+        <td><b>{{field.label}}: </b></td> 
+        <td>{{ field.value }}</td>
+      </tr>
+    {% endif %}
+  {% endfor %}
+
+  {% if friendship %}
+    <tr>
+      <th class="th-colspan" colspan="2">AMISTAD</th>
+    </tr>
+    <tr>
+      <th>ID </th> 
+      <th>Nombres</th>
+    </tr>
+    <tr>
+      <td>{{friendship.id}} </td> 
+      <td>{{ friendship }}</td>
+    </tr>
+  {% endif %}
+
+  {% if users %}
+    <tr>
+      <th class="th-colspan" colspan="2">USUARIO</th>
+    </tr>
+    <tr>
+      <th>ID </th> 
+      <th>Nombre</th>
+    </tr>
+    {% for u in users %}
+      <tr>
+        <td>{{u.id}} </td> 
+        <td>{{ u.get_full_name }}</td>
+      </tr>
+    {% endfor %}
+  {% endif %}
+</table>
+
+{% endblock %}

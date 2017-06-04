@@ -1,0 +1,68 @@
+{% extends "backoffice/base.html" %}
+{% load static %}
+
+{% block custom_css %}
+<link href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content-bar-list %}
+<li><a href="{% url 'LoansList' %}">Prestamos</a></li>
+<li><a href="{% url 'LoansRequestList' %}">Solicitudes</a></li>
+<li class="active"><a href="#">Notificaciones</a></li>
+{% endblock %}
+
+{% block content %}
+
+<!--FILRO POR FECHAS-->
+<form method="post" accept-charset="utf-8" class="form-inline" role="form" id="form-search">
+  {% csrf_token %}
+  Filtrar por fecha 
+  {% for field in dateRangeForm %}
+    <div class="form-group">{{field.label}} {{ field }} {{ field.errors }}</div>
+  {% endfor %}
+
+  <button type="submit" class="btn" >Buscar</button>
+  <a href="{% url 'NotificationList' %}"><button type="button" class="btn" >Mostrar todas</button></a>
+</form>
+<!--/FILRO POR FECHAS-->
+
+<h3>{{Title}}</h3>
+<table class="table">
+  <tr>
+    <th>ID</th>
+    <th>Usuario</th>
+    <th>Fecha</th>
+    <th>Tipo</th>
+    <th>Mensaje</th>
+  </tr>
+  {% for t in objects %}
+    <tr>
+      <td><a href="{% url 'NotificationShow' t.id %}">{{t.id}}</a></td>
+      <td>{{t.user.get_full_name}}</td>
+      <td>{{t.date|date:"d/m/Y"}}</td>
+      <td>{{t.get_about_display}}</td>
+      <td>{{t.message}}</td>
+    </tr>
+  {% endfor %}
+</table>
+
+{% endblock %}
+
+
+{% block custom_script %}
+<script type="text/javascript" src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+
+<script>
+  $(document).ready(function() {
+    //Datepicker
+    $('.datepicker').datepicker({
+      //format: 'mm-dd-yyyy',
+      endDate: '+0d',
+      autoclose: true
+    }).on('changeDate', function(e){
+        $(this).datepicker('hide');
+    });
+  });
+</script>
+
+{% endblock %} 

@@ -4,7 +4,9 @@
       <a class="navbar-brand" href="#">Nago</a>
     </div>
     <ul class="nav navbar-nav">
-      <li class="active"><a href="{% url 'backoffice' %}">Home</a></li>
+      {% if request.path == "/" %} <li class="active"> {% else %} <li> {% endif %}
+        <a href="{% url 'backoffice' %}">Home</a>
+      </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       {% if user.is_authenticated %}
