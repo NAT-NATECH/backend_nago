@@ -90,38 +90,6 @@
       "amount_loan": 400,
       "amount_interest":20
     }
-  },
-
-  {
-    "model": "server.notification",
-    "pk": 1,
-    "fields": {
-      "message": "friendship",
-      "about": "F",
-      "friendship_id":"1",
-      "user_id":"1"
-    }
-  },
-
-  {
-    "model": "server.notification",
-    "pk": 2,
-    "fields": {
-      "message": "loans",
-      "about": "L",
-      "loans_id":"1",
-      "user_id":"1"
-    }
-  },
-
-  {
-    "model": "server.notification",
-    "pk": 3,
-    "fields": {
-      "message": "request_loans",
-      "about": "RL",
-      "request_loans_id":"1",
-      "user_id":"1"
-    }
   }
+
 ]
