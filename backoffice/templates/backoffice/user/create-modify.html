@@ -1,6 +1,10 @@
 {% extends "backoffice/base.html" %}
 {% load static %}
 
+{% block custom_css %}
+<link href="{% static 'bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content-bar-list %} 
   {% if pk %} 
       <li class="active"><a href="#">Modificar</a></li>
@@ -18,15 +22,8 @@
 <form method="post" accept-charset="utf-8" class="form-group" role="form" enctype="multipart/form-data">
   {% csrf_token %}
   <table >
-    {% for field in UserForm %}
-      <tr>
-        <td><b>{{field.label}}: </b></td>
-        <td>{{ field }}
-          <span class="error" id="{{ field.name }}-icon"></span>
-          <span class='error' id='{{field.name}}-error' aria-live="polite">{{ field.errors }}</span>
-        </td>
-      </tr>
-    {% endfor %}
+    {{ UserForm.as_table }}
+    {{ UserTypeForm.as_table }}
     {{ ProfileForm.as_table }}
     <tr>
   </table>
@@ -40,27 +37,42 @@
 
 {% block custom_script %}
 
+<script type="text/javascript" src="{% static 'bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+
+<script>
+  $(document).ready(function() {
+    //Datepicker
+    $('.datepicker').datepicker({
+      endDate: '+0d',
+      autoclose: true,
+      dateFormat: 'dd/mm/yyyy' 
+    }).on('changeDate', function(e){
+        $(this).datepicker('hide');
+    });
+  });
+</script>
+
 {% if pk %}
 <script>
   $(document).ready(function() {
-      $("#btn-delete").click(function(){
-        $.ajax({
-          data : {'pk': {{pk}}, csrfmiddlewaretoken: '{{ csrf_token }}'},
-          url : '/userdeleteajax/',
-          type : 'POST',     
-          success : function(data){
-            console.log(data);
-            if(data.deleted == 1){
-              window.location.href = "{% url 'UserList' %}";
-            }else{
-              location.reload();
-            }
-          },
-          error : function(data){
-            console.log("ERROR: User delete ajax ");
+    $("#btn-delete").click(function(){
+      $.ajax({
+        data : {'pk': {{pk}}, csrfmiddlewaretoken: '{{ csrf_token }}'},
+        url : '/userdeleteajax/',
+        type : 'POST',     
+        success : function(data){
+          console.log(data);
+          if(data.deleted == 1){
+            window.location.href = "{% url 'UserList' %}";
+          }else{
+            location.reload();
           }
-        });
+        },
+        error : function(data){
+          console.log("ERROR: User delete ajax ");
+        }
       });
+    });
   });
 </script>
 {% endif%}

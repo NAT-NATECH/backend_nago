@@ -40,7 +40,7 @@ class Profile(models.Model):
     code = models.CharField("Código",max_length=10,null=True, blank=True)
     pin = models.CharField(max_length=100, null=True, blank=True)
     description = models.CharField("Descripción",max_length=100,null=True ,blank=True)
-    birthdate = models.DateField("Fecha de nacimiento",auto_now_add=False, null=True, blank=True)
+    birthdate = models.DateField("Fecha de nacimiento", null=True, blank=True)
     phone = models.CharField("Teléfono",max_length=30, null=True, blank=True)
     image = models.ImageField("Imagen de perfil",upload_to="profile/", null=True, blank=True)
     

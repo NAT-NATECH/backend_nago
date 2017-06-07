@@ -19,13 +19,13 @@
     "pk": 2,
     "fields": {
       "password": "pbkdf2_sha256$20000$T4YnkG9O4Sbr$sqlGdwtiwtSWNiAPnDMN8d+DzHGnsDoCYbN3YN8GtZI=",
-      "is_superuser": "t",
+      "is_superuser": "f",
+      "is_staff": "t",
       "username":"neo",
       "first_name": "Jose",
       "last_name": "Patino",
       "email": "neojdpm@gmail.com",
-      "is_active" : "t",
-      "is_staff": "t"
+      "is_active" : "t"
     }
   },
 

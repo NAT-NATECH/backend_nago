@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # Django
 import json
+from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
-from braces.views import LoginRequiredMixin,StaffuserRequiredMixin
+from braces.views import LoginRequiredMixin,StaffuserRequiredMixin,SuperuserRequiredMixin
 from django.views.generic import TemplateView, View
 #Project
 from server.forms import UserForm,UserModifyForm,ProfileForm
@@ -19,7 +20,7 @@ class Home(LoginRequiredMixin, StaffuserRequiredMixin, TemplateView):
     template_name = 'backoffice/home.html'
 
 ################################################################
-class UserList(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
+class UserList(LoginRequiredMixin,SuperuserRequiredMixin,TemplateView):
     template_name = 'backoffice/user/list.html'
 
     def get_context_data(self, **kwargs):
@@ -28,7 +29,7 @@ class UserList(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
         context['Title'] = "Usuarios"
         return context
 
-class UserFriendsList(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
+class UserFriendsList(LoginRequiredMixin,SuperuserRequiredMixin,TemplateView):
     template_name = 'backoffice/user/friends.html'
 
     def get_context_data(self, **kwargs):
@@ -38,41 +39,61 @@ class UserFriendsList(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
         context['Title'] = "Amistades"
         return context
 
-class UserCreateModify(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
+class UserCreateModify(LoginRequiredMixin,SuperuserRequiredMixin,TemplateView):
+    '''
+    Create and modify User
+    4 forms are used:
+        UserForm : Create User model
+        ProfileForm : Create and modify Profile user model
+        UserModifyForm : Modify User model
+        UserTypeForm : set is_superuser and is_staff to User model 
+    '''
     template_name = 'backoffice/user/create-modify.html'
 
     def get_context_data(self, **kwargs):
         context = super(UserCreateModify, self).get_context_data(**kwargs)
-        if 'pk' in kwargs:
+        #MODIFY
+        if 'pk' in kwargs: 
             user = get_object_or_404(User, pk=int(kwargs['pk']))
             profileForm = ProfileForm(instance=user.profile)
             userForm = UserModifyForm(instance=user)
+            userTypeForm = UserTypeForm(instance=user)
             context['Title'] = "Modificar usuario"
-        else:
+        #CREATE
+        else: 
             profileForm = ProfileForm()
             userForm = UserForm()
+            userTypeForm = UserTypeForm()
             context['Title'] = "Crear Usuario"
 
         context['ProfileForm'] = profileForm 
         context['UserForm'] = userForm 
+        context['UserTypeForm'] = userTypeForm
         return context
 
     def post(self, request, *args, **kwargs):
-        post_values = request.POST.copy()
-
+        #MODIFY
         if 'pk' in kwargs:
             user = get_object_or_404(User, pk=int(kwargs['pk']))
-            profileForm = ProfileForm(request.POST,request.FILES,instance=user.profile)
             userForm = UserModifyForm(request.POST,instance=user)
             title = "Modificar usuario"
+        #CREATE
         else:
-            profileForm = ProfileForm(request.POST,request.FILES)
             userForm = UserForm(request.POST)
             title = "Crear Usuario"
 
+        userTypeForm = UserTypeForm(request.POST)
+        profileForm = ProfileForm(request.POST,request.FILES)
+
         if profileForm.is_valid() and userForm.is_valid():
             user = userForm.save(commit=False)
-            user.is_active = True
+
+            #check if user is superuser or staff
+            is_staff = request.POST.get("is_staff", None)
+            is_superuser = request.POST.get("is_superuser", None)
+            user.is_superuser = True if is_superuser else False
+            user.is_staff = True if is_superuser or is_staff else False
+
             user.save()
             ProfileForm(request.POST,request.FILES,instance=user.profile).save()
 
@@ -81,9 +102,12 @@ class UserCreateModify(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
             return redirect('UserList')
 
         messages.add_message(request, messages.ERROR, 'Error: no se realizo la operación')
-        return render(request, self.template_name, {'ProfileForm':profileForm,'UserForm':userForm,'Title':title})
+        return render(request, self.template_name, {'ProfileForm':profileForm,
+                                                    'UserForm':userForm,
+                                                    'UserTypeForm':userTypeForm,
+                                                    'Title':title})
 
-class UserDeleteAjax(LoginRequiredMixin,StaffuserRequiredMixin,View):
+class UserDeleteAjax(LoginRequiredMixin,SuperuserRequiredMixin,View):
     """
     Delete requested Prod
     """
@@ -159,8 +183,10 @@ class LoansRequestList(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
         context = {'Title':self.title,'dateRangeForm':dateRangeForm,'dateTypeForm':dateTypeForm}
 
         if dateRangeForm.is_valid() and dateTypeForm.is_valid():
+            date_from = datetime.strptime(post_values['date_from'], '%d/%m/%Y').strftime('%Y-%m-%d')
+            date_to = datetime.strptime(post_values['date_to'], '%d/%m/%Y').strftime('%Y-%m-%d')
+            date_range = (date_from,date_to)
             date_type = int(post_values['date_type'])
-            date_range = (post_values['date_from'],post_values['date_to'])
             if date_type == 1: #(1, "F. Creación")
                 context['objects'] = LoanRequest.objects.filter(date_create__range=date_range)
             if date_type == 2: #(2, "F. Expiración")
@@ -213,8 +239,10 @@ class NotificationList(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
         context = {'Title':self.title,'dateRangeForm':dateRangeForm}
 
         if dateRangeForm.is_valid():
+            date_from = datetime.strptime(post_values['date_from'], '%d/%m/%Y').strftime('%Y-%m-%d')
+            date_to = datetime.strptime(post_values['date_to'], '%d/%m/%Y').strftime('%Y-%m-%d')
             context['objects'] = Notification.objects.filter(
-                                    date__range=(post_values['date_from'],post_values['date_to']))
+                                    date__range=(date_from,date_to))
         else:
             messages.add_message(request, messages.ERROR, 'Error: no se realizo la operación')
 

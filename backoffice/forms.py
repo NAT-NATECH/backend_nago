@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import date
 from django import forms
+from django.contrib.auth.models import User
+#Project
 from server.models import Loan, LoanRequest, Notification
 
 #############################################################
@@ -46,9 +48,28 @@ class DateRangeForm(forms.Form):
         for key in self.fields:
             self.fields[key].widget.attrs.update({
                 'class': 'datepicker form-control',
-                'data-date-format':'yyyy-mm-dd',
+                'data-date-format':'dd/mm/yyyy',
                 'style':'max-width:120px;'
             })
+            self.fields[key].input_formats = ['%d/%m/%Y']
+
+class UserTypeForm(forms.ModelForm):
+    """
+    Form to choice if user is superuser or staff
+    """          
+
+    class Meta:
+        model = User
+        fields = ('is_superuser', 'is_staff', )
+        labels = {
+            'is_superuser':'¿Es superusuario?', 
+            'is_staff':'¿Es staff?'
+        }
+        help_texts = {
+            'is_superuser':'Usuario con todos los permisos en el admin.', 
+            'is_staff':'Usuario con permisos restringidos en el admin.'
+        }
+
 
 #############################################################
 
