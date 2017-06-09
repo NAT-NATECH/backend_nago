@@ -8,17 +8,17 @@
     {% endif %}
   </div>
 
-  {% if user.is_superuser %}
   <div class="list-group" id="accordion">
     <a class="list-group-item bo-item-nav" data-toggle="collapse" data-parent="#accordion" href="#num1">
       <i class="fa fa-users" aria-hidden="true"></i>Usuarios
     </a>
     <div class="collapse" id="num1">
+      {% if user.is_superuser %}
       <a href="{% url 'UserCreate' %}" class="list-group-item">Crear nuevo</a>
+      {% endif %}
       <a href="{% url 'UserList' %}" class="list-group-item">Listar</a>
     </div>
   </div>
-  {% endif %}
 
   <div class="list-group" id="accordion">
     <a class="list-group-item bo-item-nav" data-toggle="collapse" data-parent="#accordion" href="#num2">

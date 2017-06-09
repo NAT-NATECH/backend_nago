@@ -35,26 +35,25 @@
 
 <h3>{{Title}}</h3>
 <div class="bo-dt-content form-inline">
-  <table class="bo-datatable dt-responsive nowrap">
+  <table class="bo-datatable dt-responsive nowrap table-hover" cellspacing="0" width="100%">
     <thead>
       <tr>
         <th>ID</th>
         <th>Deudor</th>
         <th>Prestamista</th>
-        <th>Monto solicitado</th>
-        <th>Monto disponible</th>
+        <th>Solicitado</th>
+        <th>Disponible</th>
         <th>Interes</th>
         <th>F. Creación</th>
         <th>F. Expiración</th>
         <th>F. Limite</th>
         <th>Estado</th>
-        <th>Comentario</th>
       </tr>
     </thead>
     <tbody>
       {% for t in objects %}
-      <tr>
-        <td><a href="{% url 'LoansRequestShow' t.id %}">{{t.id}}</a></td>
+      <tr class='clickable-row activar-cursor' data-href="{% url 'LoansRequestShow' t.id %}">
+        <td>{{t.id}}</td>
         <td>{{t.user.get_full_name}}</td>
         <td>{{t.get_lender.get_full_name}}</td>
         <td>{{t.amount_request}}</td>
@@ -64,7 +63,6 @@
         <td>{{t.date_expiration|date:"d/m/Y"}}</td>
         <td>{{t.deadline|date:"d/m/Y"}}</td>
         <td>{{t.state}}</td>
-        <td>{{t.commentary}}</td>
       </tr>
       {% endfor %}
     </tbody>

@@ -20,7 +20,7 @@ class Home(LoginRequiredMixin, StaffuserRequiredMixin, TemplateView):
     template_name = 'backoffice/home.html'
 
 ################################################################
-class UserList(LoginRequiredMixin,SuperuserRequiredMixin,TemplateView):
+class UserList(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
     template_name = 'backoffice/user/list.html'
 
     def get_context_data(self, **kwargs):

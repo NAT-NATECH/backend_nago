@@ -44,3 +44,6 @@ th.th-colspan{
 .bo-dt-content label{
     font-weight: normal;
 }
+.bo-datatable .clickable-row{
+    cursor: pointer;
+}

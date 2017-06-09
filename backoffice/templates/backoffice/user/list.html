@@ -1,8 +1,13 @@
 {% extends "backoffice/base.html" %}
 {% load static %}
 
+{% block custom_css %}
+<link href="{% static 'bower_components/datatables.net-dt/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+<link href="{% static 'bower_components/datatables.net-responsive-dt/css/responsive.dataTables.min.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content-bar-list %} 
-  <li><a href="{% url 'UserCreate' %}">Crear</a></li>
+   {% if user.is_superuser %} <li><a href="{% url 'UserCreate' %}">Crear</a></li>{% endif %}
   <li class="active"><a href="#">Listar</a></li>
 {% endblock %}
 
@@ -10,10 +15,53 @@
 
 <h3>{{Title}}</h3>
 
-<ul>
-  {% for u in users %}
-  <li><a href="{% url 'UserModify' u.pk %}">{{ u.get_full_name}}</a></li>
-  {% endfor %}
-</ul>
+<div class="bo-dt-content form-inline">
+  <table class="bo-datatable dt-responsive nowrap table-hover" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Tipo</th>
+        <th>Código</th>
+        <th>F. Nacimiento</th>
+        <th>Email</th>
+        <th>Telf.</th>
+        <th>Descripción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      {% if user.is_superuser %}
+      <tr class='clickable-row activar-cursor' data-href="{% url 'UserModify' u.pk %}">
+      {% else %}
+      <tr>
+      {% endif %}
+        <td>{{u.id}}</td>
+        <td>{{ u.get_full_name}}</td>
+        <td>          
+          {% if u.is_superuser %} Superusuario
+          {% elif u.is_staff %} Staff
+          {% else %} Regular
+          {% endif %}
+        </td>
+        <td>{{u.profile.code}}</td>
+        <td>{{u.profile.birthdate|date:"d/m/Y"}}</td>
+        <td>{{u.email}}</td>
+        <td>{{ u.profile.phone }}</td>
+        <td>{{u.profile.description}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 {% endblock %}
+
+
+
+{% block custom_script %}
+<script type="text/javascript" src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'backoffice/js/datatable.js' %}"></script>
+
+{% endblock %} 

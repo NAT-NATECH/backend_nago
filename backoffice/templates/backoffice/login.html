@@ -1,5 +1,7 @@
 {% extends 'backoffice/base.html' %}
 
+{% block content-bar %}{% endblock %}
+
 {% block content %}
   {% if form.errors %}
     <p style="color: red">Your username and password didn't match. Please try again.</p>

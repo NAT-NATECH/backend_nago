@@ -35,7 +35,7 @@
 <h3>{{Title}}</h3>
 
 <div class="bo-dt-content form-inline">
-  <table class="bo-datatable dt-responsive nowrap">
+  <table class="bo-datatable dt-responsive nowrap table-hover" cellspacing="0" width="100%">
     <thead>
       <tr>
         <th>ID</th>
@@ -47,8 +47,8 @@
     </thead>
     <tbody>
       {% for t in objects %}
-      <tr>
-        <td><a href="{% url 'NotificationShow' t.id %}">{{t.id}}</a></td>
+      <tr class='clickable-row activar-cursor' data-href="{% url 'NotificationShow' t.id %}">
+        <td>{{t.id}}</td>
         <td>{{t.user.get_full_name}}</td>
         <td>{{t.date|date:"d/m/Y"}}</td>
         <td>{{t.get_about_display}}</td>
