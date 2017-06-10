@@ -1,17 +1,17 @@
+#base-content{  
+    margin-left: 230px;
+    padding-top: 4px;
+}
+#base-content-body{
+    margin: auto;
+    width: 96%;
+}
 .base-content-bar{
     border: 0;
     border-radius: 0;
 }
 
-#base-content{  
-    margin-left: 230px;
-    padding-top: 4px;
-}
-
-#base-content-body{
-    margin: auto;
-    width: 96%;
-}
+/********** PROJECT **********/
 
 .form-filter{
     margin-top: 8px;

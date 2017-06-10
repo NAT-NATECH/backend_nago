@@ -5,13 +5,6 @@ body,html{
     margin-top: 24px;
 }
 
-#base-alert{
-	margin-bottom: 0;
-	z-index: 2000;
-	position: fixed;
-	width: 100%;
-}
-
 .errorlist{
 	color: red;
 }
@@ -20,12 +13,16 @@ body,html{
 	text-align: center;
 }
 
-
 #base-content form table{
     margin-bottom: 10px;
 }
-
 #base-content form table input,#base-content form table select{
     margin-bottom: 3px;
     margin-left: 2px;
+}
+#base-alert{
+    margin-bottom: 0;
+    z-index: 2000;
+    position: fixed;
+    width: 100%;
 }
