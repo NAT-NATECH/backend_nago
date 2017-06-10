@@ -1,10 +1,11 @@
-<div id="bo-Menu">
-  <div id="bo-user">
+{% load static %}
+<div id="sidebar">
+  <div class="sidebar-user">
     <span>{{ user.get_full_name }}</span>
     {% if user.profile.image %}
     <img src="{{user.profile.image.url}}">  
     {% else %}
-    <div class="no-image"></div>
+    <img src="{% static 'image/default_user_icon.png' %}">
     {% endif %}
   </div>
 

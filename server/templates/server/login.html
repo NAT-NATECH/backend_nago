@@ -1,0 +1,13 @@
+{% extends 'server/base.html' %}
+
+{% block content %}
+  <h2>Iniciar sesión</h2>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}" />
+    <table> {{ form.as_table }} </table>
+    <div class="center">      
+      <button type="submit" class="btn">Aceptar</button> <br>
+    </div>
+  </form>
+{% endblock %}

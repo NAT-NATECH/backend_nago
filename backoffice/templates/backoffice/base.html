@@ -13,21 +13,20 @@
 {% block msg %}
   {% for message in messages %}
     {% bootstrap_mt message.tags as btag %}
-    <div id="bo-alert" class="alert alert-{{ btag }}">{{ message }}</div>
+    <div id="base-alert" class="alert alert-{{ btag }}">{{ message }}</div>
   {% endfor %}
 {% endblock %}
 
-{% block navbar %}
-  {% include "backoffice/navbar.html" %}
+{% block base_navbar %}
   {% if user.is_authenticated %}
     {% include "backoffice/sidebar.html" %}
   {% endif %}
 {% endblock %}
 
 {% block base_content %}
-  <div id="bo-content">
+  <div id="base-content">
     {% block content-bar %}  
-      <nav class="bo-content-bar navbar navbar-default">
+      <nav class="base-content-bar navbar navbar-default">
         <div class="container-fluid">
           <ul class="nav navbar-nav">
             {% block content-bar-list %}   
@@ -41,7 +40,7 @@
       </nav>  
     {% endblock %}
 
-    <div id="bo-content-body">
+    <div id="base-content-body">
       {% block content %}
       {% endblock %}
     </div>
@@ -49,23 +48,5 @@
 {% endblock %}
 
 {% block base_script %}
-  <script type="text/javascript">
-    $(document).ready(function() {
-      //Cerrar desplegable del menu
-      $('#accordion .collapse').on('show.bs.collapse', function (e) {
-        var actives = $('#accordion').find('.in, .collapsing');
-        actives.each( function (index, element) {
-            $(element).collapse('hide');
-        })
-      })
-      
-      //Mensaje de alerta 
-      $("#bo-alert").fadeTo(2000, 500).slideUp(500, function(){
-        $("#bo-alert").slideUp(500);
-      });
-    });
-  </script>
-
   {% block custom_script %}{% endblock %}
-
 {% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load adminTags static %}
+
+{% block title %}{% if Title %}{{Title}}{% else %}Auth{% endif %}{% endblock %}
+
+{% block base_css %}
+  <link rel="stylesheet" href="{% static 'server/css/base.css' %}" />
+  {% block custom_css %}{% endblock %}
+{% endblock %}
+
+{% block msg %}
+  {% for message in messages %}
+    {% bootstrap_mt message.tags as btag %}
+    <div id="base-alert" class="alert alert-{{ btag }}">{{ message }}</div>
+  {% endfor %}
+{% endblock %}
+
+{% block base_content %}
+  <div id="base-content">
+  	{% block content %}{% endblock %}
+  </div>
+{% endblock %}
+
+{% block base_script %}
+  {% block custom_script %}{% endblock %}
+{% endblock %}

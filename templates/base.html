@@ -12,10 +12,9 @@
 
     <title>{% block title %}{% endblock %}</title>
 
-    {% block css %}
-      <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-      <link href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
-    {% endblock css %}
+    <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bower_components/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css">
 
     {% block base_css %}{% endblock %}
 
@@ -25,14 +24,23 @@
 
 {% block msg %}{% endblock %}
 
-{% block navbar %}{% endblock %}
+{% block navbar %}
+  {% include "navbar.html" %}
+  {% block base_navbar %}{% endblock %}
+{% endblock %}
 
 {% block base_content %}{% endblock %}
 
-{% block script %}
-  <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-  <script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-{% endblock %}
+<script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript">
+  $(document).ready(function() {      
+    //Mensaje de alerta 
+    $("#base-alert").fadeTo(2000, 500).slideUp(500, function(){
+      $("#base-alert").slideUp(500);
+    });
+  });
+</script>
 
 {% block base_script %}{% endblock %}
 
