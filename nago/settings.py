@@ -82,9 +82,9 @@ WSGI_APPLICATION = NAME+'.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'nago_db',
-        'USER': 'nago_admin',
-        'PASSWORD': 'nago123',
+        'NAME': 'NAT_db',
+        'USER': 'NAT_admin',
+        'PASSWORD': 'NAT123',
         'HOST': 'localhost',
     }
 }
@@ -136,10 +136,12 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = DIR+'/media/'
 
-EMAIL_HOST = 'smtp.webfaction.com'
-EMAIL_HOST_USER = 'mandala_email'
-EMAIL_HOST_PASSWORD = 'Vito_Corleone0'
-EMAIL_PORT = '587'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'wedoopruebas@gmail.com'
+EMAIL_HOST_PASSWORD = 'holijiji'
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 LOGIN_REDIRECT_URL= "/"

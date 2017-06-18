@@ -4,12 +4,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    url(r'^register/', views.register, name='register'),
-    url(r'^login/', views.login, name='login'),
-    url(r'^editProfile/', views.editProfile, name='editProfile'),
-    url(r'^existUsername/', views.existUsername, name='existUsername'),
-    url(r'^existEmail/', views.existEmail, name='existEmail'),
-    url(r'^sendEmailCode/', views.sendEmailCode, name='sendEmailCode'),
+    url(r'^register/', views.register, name='register'), # FIXED
+    url(r'^login/', views.login, name='login'), # FIXED
+    url(r'^editProfile/', views.editProfile, name='editProfile'), # FIXED
+    url(r'^existUsername/', views.existUsername, name='existUsername'), # FIXED
+    url(r'^existEmail/', views.existEmail, name='existEmail'), # FIXED
+    url(r'^sendEmailCode/', views.sendEmailCode, name='sendEmailCode'), # FIXED
     url(r'^viewNagoUsers/', views.viewNagoUsers, name='viewNagoUsers'),
     url(r'^viewProfileUser/', views.viewProfileUser, name='viewProfileUser'),
     url(r'^sendInvitationFriend/', views.sendInvitationFriend, name='sendInvitationFriend'),
@@ -26,12 +26,12 @@ urlpatterns = [
     url(r'^viewFriendsLoansPay/', views.viewFriendsLoansPay, name='viewFriendsLoansPay'),
     url(r'^viewProfileSelf/', views.viewProfileSelf, name='viewProfileSelf'),
     url(r'^userNagoFilter/', views.userNagoFilter, name='userNagoFilter'),
-    url(r'^validatePin/', views.validatePin, name='validatePin'),
+    url(r'^validatePin/', views.validatePin, name='validatePin'),  # FIXED
     url(r'^viewHistoryProfile/', views.viewHistoryProfile, name='viewHistoryProfile'),
     url(r'^viewHistoryDetail/', views.viewHistoryDetail, name='viewHistoryDetail'),
     url(r'^lendingSolicitude/', views.lendingSolicitude, name='lendingSolicitude'),
     url(r'^viewExpectedProfile/', views.viewExpectedProfile, name='viewExpectedProfile'),
-    url(r'^viewAmountMarket/', views.viewAmountMarket, name='viewAmountMarket'),
+    url(r'^viewAmountMarket/', views.viewAmountMarket, name='viewAmountMarket'), # FIXED
     url(r'^viewInterestMarket/', views.viewInterestMarket, name='viewInterestMarket'),
     url(r'^viewDeadlineMarket/', views.viewDeadlineMarket, name='viewDeadlineMarket'),
     url(r'^viewRequestedAccount/', views.viewRequestedAccount, name='viewRequestedAccount'),
@@ -39,7 +39,7 @@ urlpatterns = [
     url(r'^viewRequestdUser/', views.viewRequestdUser, name='viewRequestdUser'),
     url(r'^viewInvestedUser/', views.viewInvestedUser, name='viewInvestedUser'),
     url(r'^checkInUser/', views.checkInUser, name='checkInUser'),
-    url(r'^checkOutUser/', views.checkOutUser, name='checkOutUser'),
+    url(r'^checkOutUser/', views.checkOutUser, name='checkOutUser'),#
     
 
 

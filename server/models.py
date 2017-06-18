@@ -78,7 +78,6 @@ def update_user_profile(sender, instance, created, **kwargs):
 
 class LoanRequest(models.Model):
     user = models.ForeignKey(User,verbose_name='ID de Usuario')
-    friendship = models.ForeignKey(Friendship,verbose_name='ID de Amistad')
     state = models.BooleanField("Estado",default=False)
     amount_available = models.DecimalField("Monto disponible",decimal_places=2,max_digits=12)
     amount_request = models.DecimalField("Monto sugerido",
@@ -98,6 +97,7 @@ class LoanRequest(models.Model):
 
 class Loan(models.Model):
     loan_request = models.ForeignKey(LoanRequest,verbose_name='ID de Solicitud')
+    friendship = models.ForeignKey(Friendship,verbose_name='ID de Amistad', null=True)
     state = models.BooleanField("Estado",default=False)
     amount_loan = models.DecimalField("Monto del prestamos",
                                         validators=[MinValueValidator(0.0)],
