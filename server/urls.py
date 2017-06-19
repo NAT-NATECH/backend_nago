@@ -12,9 +12,9 @@ urlpatterns = [
     url(r'^sendEmailCode/', views.sendEmailCode, name='sendEmailCode'), # FIXED
     url(r'^viewNagoUsers/', views.viewNagoUsers, name='viewNagoUsers'),
     url(r'^viewProfileUser/', views.viewProfileUser, name='viewProfileUser'),
-    url(r'^sendInvitationFriend/', views.sendInvitationFriend, name='sendInvitationFriend'),
-    url(r'^invitationViewFriends/', views.invitationViewFriends, name='invitationViewFriends'),
-    url(r'^viewMyFriends/', views.viewMyFriends, name='viewMyFriends'),
+    url(r'^sendInvitationFriend/', views.sendInvitationFriend, name='sendInvitationFriend'), # FIXED
+    url(r'^invitationViewFriends/', views.invitationViewFriends, name='invitationViewFriends'), # FIXED
+    url(r'^viewMyFriends/', views.viewMyFriends, name='viewMyFriends'), # FIXED
     url(r'^responseInvitationFriendAccept/', views.responseInvitationFriendAccept, name='responseInvitationFriendAccept'),
     url(r'^validateCode/', views.validateCode, name='validateCode'),
     url(r'^viewProfileFriend/', views.viewProfileFriend, name='viewProfileFriend'),
@@ -31,15 +31,15 @@ urlpatterns = [
     url(r'^viewHistoryDetail/', views.viewHistoryDetail, name='viewHistoryDetail'),
     url(r'^lendingSolicitude/', views.lendingSolicitude, name='lendingSolicitude'),
     url(r'^viewExpectedProfile/', views.viewExpectedProfile, name='viewExpectedProfile'),
-    url(r'^viewAmountMarket/', views.viewAmountMarket, name='viewAmountMarket'), # FIXED
-    url(r'^viewInterestMarket/', views.viewInterestMarket, name='viewInterestMarket'),
-    url(r'^viewDeadlineMarket/', views.viewDeadlineMarket, name='viewDeadlineMarket'),
-    url(r'^viewRequestedAccount/', views.viewRequestedAccount, name='viewRequestedAccount'),
-    url(r'^viewInvestedAccount/', views.viewInvestedAccount, name='viewInvestedAccount'),
-    url(r'^viewRequestdUser/', views.viewRequestdUser, name='viewRequestdUser'),
-    url(r'^viewInvestedUser/', views.viewInvestedUser, name='viewInvestedUser'),
-    url(r'^checkInUser/', views.checkInUser, name='checkInUser'),
-    url(r'^checkOutUser/', views.checkOutUser, name='checkOutUser'),#
+    url(r'^viewAmountMarket/', views.viewAmountMarket, name='viewAmountMarket'),       # FIXED
+    url(r'^viewInterestMarket/', views.viewInterestMarket, name='viewInterestMarket'), # FIXED
+    url(r'^viewDeadlineMarket/', views.viewDeadlineMarket, name='viewDeadlineMarket'), # FIXED
+    url(r'^viewRequestedAccount/', views.viewRequestedAccount, name='viewRequestedAccount'), # FIXED 
+    url(r'^viewInvestedAccount/', views.viewInvestedAccount, name='viewInvestedAccount'),    # FIXED
+    url(r'^viewRequestdUser/', views.viewRequestdUser, name='viewRequestdUser'), # FIXED
+    url(r'^viewInvestedUser/', views.viewInvestedUser, name='viewInvestedUser'), # FIXED
+    url(r'^checkInUser/', views.checkInUser, name='checkInUser'), # FIXED
+    url(r'^checkOutUser/', views.checkOutUser, name='checkOutUser'), # FIXED
     
 
 
