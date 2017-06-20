@@ -78,28 +78,6 @@ WSGI_APPLICATION = NAME+'.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-ON_SERVER = True
-if ON_SERVER:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'd22ik5jfhlg0ii',
-            'USER': 'kdlutvdozznkba',
-            'PASSWORD': 'e7c8b7a9d62e0305d42e60c80a35147c5c00a2c1e8c4b4bbaaa9e1fe113bdb77',
-            'HOST': 'ec2-54-225-182-108.compute-1.amazonaws.com',
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'NAT_db',
-            'USER': 'NAT_admin',
-            'PASSWORD': 'NAT123',
-            'HOST': 'localhost',
-        }
-    }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
