@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.core.validators import MaxValueValidator,MinValueValidator
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.utils import timezone
 from django.db import models
 from django.db.models.signals import post_save
@@ -28,7 +30,7 @@ class Friendship(models.Model):
         reverse = FriendShip.objects.filter(friend1=self.friend2, friend2=self.friend1) 
 
         if direct.exists() or reverse.exists():
-            raise ValidationError({'key':'Esta relación la existe.'})
+            raise ValidationError({'key':'Esta relación ya existe.'})
 
     def __str__(self):
         return self.friend1.get_full_name() + " y " + self.friend2.get_full_name()
@@ -90,10 +92,9 @@ class LoanRequest(models.Model):
     deadline = models.DateField("Fecha límite")
     date_create = models.DateField("Fecha de creación",auto_now_add=True)
 
-    def get_lender(self):
-        direct = Friendship.objects.filter(friend1=self.user)
-        reverse = Friendship.objects.filter(friend2=self.user) 
-        return direct[0].friend2 if direct else reverse[0].friend1
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield (field.verbose_name, field.value_to_string(self))
 
 class Loan(models.Model):
     loan_request = models.ForeignKey(LoanRequest,verbose_name='ID de Solicitud')
@@ -106,25 +107,30 @@ class Loan(models.Model):
                                             validators=[MinValueValidator(0.0)],
                                             decimal_places=2,max_digits=12)
 
-class Notification(models.Model):
-    FRIENDS = "F"
-    REQUEST_LOANS = "RL"
-    LOANS = "L"
+    def get_lender(self):
+        if self.friendship.friend1 == self.loan_request.user:
+            return self.friendship.friend2 
+        else:
+            return self.friendship.friend1
 
-    TYPE_CHOICES = (
-        (FRIENDS, 'Amistad'),
-        (REQUEST_LOANS, 'Solicitud de prestamo'),
-        (LOANS, 'Prestamo')
-    )
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield (field.verbose_name, field.value_to_string(self))
+
+class Notification(models.Model):
 
     user = models.ForeignKey(User,verbose_name='ID de Usuario')
     message = models.TextField("Mensaje",max_length=150)
     date = models.DateField("Fecha",auto_now_add=True)
-    read = models.BooleanField("Leído",default=True)
-    about = models.CharField("Tipo",max_length=2,choices=TYPE_CHOICES)
-    friendship = models.ForeignKey(Friendship, null=True, blank=True,verbose_name='ID de Amistad')
-    loans = models.ForeignKey(Loan, null=True, blank=True,verbose_name='ID de Prestamo')
-    request_loans = models.ForeignKey(LoanRequest, null=True, blank=True,verbose_name='ID de Solicitud')
+    read = models.BooleanField("Leído",default=False)
+    request_type = models.ForeignKey(ContentType,verbose_name='Tipo')
+    request_id = models.PositiveIntegerField(verbose_name='ID del Tipo')
+    request = GenericForeignKey('request_type', 'request_id')
 
     class Meta:
         ordering = ['date']
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            if(field.verbose_name not in ['Tipo']):
+                yield (field.verbose_name, field.value_to_string(self))

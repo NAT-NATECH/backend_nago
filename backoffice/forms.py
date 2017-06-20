@@ -72,23 +72,17 @@ class UserTypeForm(forms.ModelForm):
 
 
 #############################################################
+#### DISPLAY FORMS ####
 
 class LoanShowForm(forms.ModelForm):      
 
     class Meta:
         model = Loan
-        exclude = []
+        exclude = ['friendship','loan_request']
 
 
 class LoanRequestShowForm(forms.ModelForm):      
 
     class Meta:
         model = LoanRequest
-        exclude = []
-
-
-class NotificationShowForm(forms.ModelForm):      
-
-    class Meta:
-        model = Notification
-        exclude = []
+        exclude = ['user']

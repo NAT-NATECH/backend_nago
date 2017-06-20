@@ -40,7 +40,6 @@
       <tr>
         <th>ID</th>
         <th>Deudor</th>
-        <th>Prestamista</th>
         <th>Solicitado</th>
         <th>Disponible</th>
         <th>Interes</th>
@@ -55,7 +54,6 @@
       <tr class='clickable-row activar-cursor' data-href="{% url 'LoansRequestShow' t.id %}">
         <td>{{t.id}}</td>
         <td>{{t.user.get_full_name}}</td>
-        <td>{{t.get_lender.get_full_name}}</td>
         <td>{{t.amount_request}}</td>
         <td>{{t.amount_available}}</td>
         <td>{{t.interest}}</td>
