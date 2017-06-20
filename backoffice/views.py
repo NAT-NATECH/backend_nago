@@ -154,6 +154,7 @@ class LoansShow(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
         context = super(LoansShow, self).get_context_data(**kwargs)
         obj = get_object_or_404(Loan, pk=int(kwargs['pk']))
         context['object'] = LoanShowForm(instance=obj)
+        context['obj'] = obj
         context['Title'] = self.title
         return context
 
@@ -211,8 +212,7 @@ class LoansRequestShow(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
         context = super(LoansRequestShow, self).get_context_data(**kwargs)
         obj = get_object_or_404(LoanRequest, id=int(kwargs['pk']))
         context['object'] = LoanRequestShowForm(instance=obj)
-        context['users'] = [obj.friendship.friend1,obj.friendship.friend2] 
-        context['friendship'] = obj.friendship
+        context['obj'] = obj
         context['Title'] = self.title
         return context
 
@@ -259,11 +259,7 @@ class NotificationShow(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(NotificationShow, self).get_context_data(**kwargs)
         obj = get_object_or_404(Notification, pk=int(kwargs['pk']))
-        context['object'] = NotificationShowForm(instance=obj)
-        if obj.friendship:
-            context['friendship'] = obj.friendship
-            context['users'] = [obj.friendship.friend1,obj.friendship.friend2] 
-        else:
-            context['users'] = [obj.user] 
+        context['notification'] = True
+        context['obj'] = obj
         context['Title'] = self.title
         return context

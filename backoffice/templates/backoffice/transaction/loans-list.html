@@ -30,13 +30,13 @@
     </thead>
     <tbody>
       {% for l in objects %}
-        <tr>
-          <td><a href="{% url 'LoansShow' l.id %}">{{l.id}}</a></td>
-          <td>{{l.loan_request.get_lender.get_full_name}}</td>
+        <tr class='clickable-row activar-cursor' data-href="{% url 'LoansShow' l.id %}">
+          <td>{{l.id}}</td>
+          <td>{{l.get_lender.get_full_name}}</td>
           <td>{{l.loan_request.user.get_full_name}}</td>
           <td>{{l.amount_loan}}</td>
           <td>{{l.amount_interest}}</td>
-          <td><a href="{% url 'LoansRequestShow' l.loan_request.id %}">{{l.loan_request.id}}</a></td>
+          <td>{{l.loan_request.id}}</td>
         </tr>
       {% endfor %}
     </tbody>

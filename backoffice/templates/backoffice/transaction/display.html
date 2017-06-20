@@ -10,47 +10,49 @@
 
 {% block content %}
 
-<h3>Visualizar {{Title}} {{pk}}</h3>
+<h3>Visualizar {{Title}}</h3>
 
 <table class="table-condensed bo-table">
-  {% for field in object %}  
-    {% if field.value %}
-      <tr>
-        <td><b>{{field.label}}: </b></td> 
-        <td>{{ field.value }}</td>
-      </tr>
-    {% endif %}
+  {% for field, val in obj %}
+    <tr>
+      <td><b>{{ field }}:</b></td><td>{{ val }}</td>
+    </tr>
   {% endfor %}
 
-  {% if friendship %}
+  {% if notification %}
     <tr>
-      <th class="th-colspan" colspan="2">AMISTAD</th>
-    </tr>
-    <tr>
-      <th>Nombres</th>
-      <th>ID </th> 
-    </tr>
-    <tr>
-      <td>{{ friendship }}</td>
-      <td>{{friendship.id}} </td> 
+      <td><b>Tipo:</b></td><td>{{obj.request_type}}</td>
     </tr>
   {% endif %}
 
-  {% if users %}
-    <tr>
-      <th class="th-colspan" colspan="2">USUARIO</th>
-    </tr>
-    <tr>
-      <th>Nombre</th>
-      <th>ID </th> 
-    </tr>
-    {% for u in users %}
-      <tr>
-        <td>{{ u.get_full_name }}</td>
-        <td>{{u.id}} </td> 
-      </tr>
-    {% endfor %}
+  {% if obj.user %}
+  <tr>
+    <td><b>Nombre de usuario:</b> </td>
+    <td>{{obj.user.get_full_name}}</td>
+  </tr>
   {% endif %}
+
+  {% if obj.friendship %}
+  <tr>
+    <td><b>Amistad:</b> </td>
+    <td>{{obj.friendship}}</td>
+  </tr>
+  {% endif %}
+
+  {% if obj.loan_request %}
+  <tr>
+    <td><b>Usuario que solicita:</b> </td>
+    <td>{{obj.loan_request.user.get_full_name}}</td>
+  </tr>
+  <tr>
+    <td colspan="2">
+        <a href="{% url 'LoansRequestShow' obj.loan_request.id %}">
+          Ver solicitud <i class="fa fa-eye" aria-hidden="true"></i>
+        </a>
+    </td>
+  </tr>
+  {% endif %}
+
 </table>
 
 {% endblock %}
