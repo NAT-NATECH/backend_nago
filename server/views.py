@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.http import JsonResponse, Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render_to_response
@@ -27,6 +29,7 @@ NUM_CODE = 4
 APP_KEY = '2AWiAmEyRhW8VV1sCgPpTAaG5AQpyhaLTuSnCRLMMoxjRbnPPm'
 APP_SECRET = 'grU6Ne1ScFXiEaBQ8mxD9pNJMLtrQlxngPe6qfhbx0nYcQR2EG'
 ACCESS_TOKEN = 'ghMe50QC7JoLwzzvNofKqGHbZBeJwg6LMcHm9PVmDO4XnQMOd7'
+SERVER_URL = "http://localhost:8000"
 
 def method_post(funcion):
 	def decorador(*args, **kwargs):
@@ -178,6 +181,7 @@ def register(request):
 	response = False
 	account = None
 	if validate_args(request, 'name', 'lastname','username', 'email', 'password', 'app') and not exist_username(request.POST['username']): #and (not exist_email(request.POST['email']))
+		print "validated"
 		try:
 			pin = code_generator(NUM_CODE)
 			root = User(username=request.POST['username'], first_name=request.POST['name'], last_name=request.POST['lastname'], email=request.POST['email'].lower())
@@ -190,8 +194,6 @@ def register(request):
 
 			if 'img_profile' in request.FILES:
 				person.image = request.FILES['img_profile']
-			else:
-				person.image = '/profile/user.png'
 
 			person.save()
 			
@@ -206,7 +208,7 @@ def register(request):
 			}
 
 			# Using dwollav2 - https://github.com/Dwolla/dwolla-v2-python (Recommended)
-			account_token = client.Token(access_token=ACCESS_TOKEN, refresh_token=client.Auth.client())
+			account_token = client.Token(access_token=app_token.access_token, refresh_token=client.Auth.client())
 			customer = account_token.post('customers', request_body)
 			
 			account = root.account
@@ -229,14 +231,14 @@ def register(request):
 			# ------------------
 
 			response = True
+
 		except Exception as e:
-			print('Error: '+str(e))
+			print e
 			if account is not None:
 				account.delete()
 			person.delete()
 			root.delete()
 			response = False
-	print "done"
 				
 	return HttpResponse(json.dumps(response), content_type='application/json')
 
@@ -269,6 +271,8 @@ def login(request):
 		except:
 			response['available'] = 0			
 		response['locked'] = float(account.amount_locked)
+		if (person.image): response['img_profile'] = SERVER_URL + person.image.url
+		else: response['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 		response['invest'] = float(account.amount_invested)
 		response['available'] = float(account.amount_available)
 		response['customer_dwolla'] = account.customer_dwolla
@@ -368,9 +372,9 @@ def viewNagoUsers(request):
 			if person.image:
 				print person.image
 				try:
-					data['img_profile'] = person.image.url
+					data['img_profile'] = SERVER_URL + person.image.url
 				except:
-					data['img_profile'] = person.image
+					data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 
 			data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
 			if person.description is None:
@@ -474,9 +478,9 @@ def invitationViewFriends(request):
 			data['user_invitation_id'] = person.id
 			
 			try:
-				data['img_profile'] = person.image.url
+				data['img_profile'] = SERVER_URL + person.image.url
 			except:
-				data['img_profile'] = person.image
+				data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 
 			data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
 			data['username'] = person.user.username
@@ -508,9 +512,9 @@ def viewMyFriends(request):
 			data['user_invitation_id'] = person.id
 			
 			try:
-				data['img_profile'] = person.image.url
+				data['img_profile'] = SERVER_URL + person.image.url
 			except:
-				data['img_profile'] = person.image
+				data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 
 			data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
 			data['username'] = person.user.username
@@ -544,15 +548,15 @@ def responseInvitationFriendAccept(request):
 	response = False
 
 	if validate_args(request, 'id', 'user_invitation_id', 'app'):
-		friends_0 = models.Friendship.objects.filter(friend=int(request.POST['id']), friend2=int(request.POST['user_invitation_id']), state=3)
-		friends_1 = models.Friendship.objects.filter(friend=int(request.POST['user_invitation_id']), friend2=int(request.POST['id']), state=3)
+		friends_0 = models.Friendship.objects.filter(friend1=int(request.POST['id']), friend2=int(request.POST['user_invitation_id']), state=3)
+		friends_1 = models.Friendship.objects.filter(friend1=int(request.POST['user_invitation_id']), friend2=int(request.POST['id']), state=3)
 		if len(friends_0) > 0 and len(friends_1) > 0:
 			try:
-				friend_0 = models.Friendship.objects.get(friend=int(request.POST['id']), friend2=int(request.POST['user_invitation_id']), state=3)
+				friend_0 = models.Friendship.objects.get(friend1=int(request.POST['id']), friend2=int(request.POST['user_invitation_id']), state=3)
 				friend_0.state = 1; 
 				friend_0.save()
 
-				friend_1 = models.Friendship.objects.get(friend=int(request.POST['user_invitation_id']), friend2=int(request.POST['id']), state=3)
+				friend_1 = models.Friendship.objects.get(friend1=int(request.POST['user_invitation_id']), friend2=int(request.POST['id']), state=3)
 				friend_1.state = 1; 
 				friend_1.save()
 
@@ -560,13 +564,13 @@ def responseInvitationFriendAccept(request):
 				lista_request_loans = models.LoanRequest.objects.filter(user=int(request.POST['user_invitation_id']), state=True)
 				if len(lista_request_loans) > 0:
 					request_loans = lista_request_loans[0]
-					friend_loans = models.Friendships_Loans(state=False, fk_request_loans=request_loans, fk_friends=friend_0)
+					friend_loans = models.Loan(state=False, loan_request=request_loans, friendship=friend_0)
 					friend_loans.save()
 					
 				lista_request_loans = models.LoanRequest.objects.filter(user=int(request.POST['id']), state=True)
 				if len(lista_request_loans) > 0:
 					request_loans = lista_request_loans[0]
-					friend_loans = models.Friendships_Loans(state=False, fk_request_loans=request_loans, fk_friends=friend_1)
+					friend_loans = models.Loan(state=False, loan_request=request_loans, friendship=friend_1)
 					friend_loans.save()
 
 			except Exception as e:
@@ -582,15 +586,15 @@ def responseInvitationFriendCancel(request):
 	response = False
 
 	if validate_args(request, 'id', 'user_invitation_id', 'app'):
-		friends_0 = models.Friendship.objects.filter(friend=int(request.POST['id']), friend2=int(request.POST['user_invitation_id']), state=3)
-		friends_1 = models.Friendship.objects.filter(friend=int(request.POST['user_invitation_id']), friend2=int(request.POST['id']), state=3)
+		friends_0 = models.Friendship.objects.filter(friend1=int(request.POST['id']), friend2=int(request.POST['user_invitation_id']), state=3)
+		friends_1 = models.Friendship.objects.filter(friend1=int(request.POST['user_invitation_id']), friend2=int(request.POST['id']), state=3)
 		if len(friends_0) > 0 and len(friends_1) > 0:
 			try:
-				friend_0 = models.Friendship.objects.get(friend=int(request.POST['id']), friend2=int(request.POST['user_invitation_id']), state=3)
+				friend_0 = models.Friendship.objects.get(friend1=int(request.POST['id']), friend2=int(request.POST['user_invitation_id']), state=3)
 				friend_0.state = 2; 
 				friend_0.save()
 
-				friend_1 = models.Friendship.objects.get(friend=int(request.POST['user_invitation_id']), friend2=int(request.POST['id']), state=3)
+				friend_1 = models.Friendship.objects.get(friend1=int(request.POST['user_invitation_id']), friend2=int(request.POST['id']), state=3)
 				friend_1.state = 2; 
 				friend_1.save()
 			except:
@@ -628,12 +632,13 @@ def loanSolicitude(request):
 		request_loans.date_expiration = request.POST['date_expiration']
 		request_loans.commentary = request.POST['commentary']
 		request_loans.deadline = request.POST['deadline']
-		request_loans.user = models.Profile.objects.get(id=int(request.POST['id'])).user
+		request_loans.user = models.User.objects.get(id=int(request.POST['id']))
+		request_loans.state = True
 		request_loans.save()
 
-		for friend in models.Friendship.objects.filter(friend2__id=int(request.POST['id']), state=1):
-			friends_loans = models.Loan(loan_request=request_loans, friendship=friend)
-			friends_loans.save()
+		#for friend in models.Friendship.objects.filter(friend2__id=int(request.POST['id']), state=1):
+		#	friends_loans = models.Loan(loan_request=request_loans, friendship=friend)
+		#	friends_loans.save()
 	
 	return HttpResponse(json.dumps(response), 'content-type/json')
 
@@ -738,9 +743,9 @@ def viewFriendsLoans(request):
 				person = models.Profile.objects.get(id=friend.friend2.id)
 				data['id'] = person.id
 				try: 
-					data['img_profile'] = person.image.url
+					data['img_profile'] = SERVER_URL + person.image.url
 				except: 
-					data['img_profile'] = person.image
+					data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 				data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
 				data['comment'] = friends_loans.loan_request.commentary
 				data['date_expiration'] = str(friends_loans.loan_request.date_expiration.year)+'-'+str(friends_loans.loan_request.date_expiration.month)+'-'+str(friends_loans.loan_request.date_expiration.day)
@@ -768,9 +773,9 @@ def viewInvesteds(request):
 				person = models.Profile.objects.get(id=friend.friend2.id)
 				data['id'] = person.id
 				try: 
-					data['img_profile'] = person.image.url
+					data['img_profile'] = SERVER_URL + person.image.url
 				except: 
-					data['img_profile'] = person.image
+					data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 				data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
 				data['comment'] = friends_loans.loan_request.commentary
 				data['date_expiration'] = str(friends_loans.loan_request.date_expiration.year)+'-'+str(friends_loans.loan_request.date_expiration.month)+'-'+str(friends_loans.loan_request.date_expiration.day)
@@ -792,7 +797,7 @@ def viewLoanFriend(request):
 	if validate_args(request, 'id', 'user_id', 'app'):
 		person_self = models.Profile.objects.get(id=int(request.POST['id']))
 		account = person_self.user.account
-		request_loans = models.LoanRequest.objects.get(user__id=int(request.POST['user_id']), state=True)
+		request_loans = models.LoanRequest.objects.get(id=int(request.POST['loan_id']), state=True)
 		person = models.Profile.objects.get(id=int(request.POST['user_id']))
 		friends = models.Friendship.objects.get(friend1=person_self.user, friend2=person.user, state=1)
 		
@@ -856,9 +861,9 @@ def viewFriendsLoansPay(request):
 				laon = models.Loans.objects.get(fk_friend_loans=friends_loans)
 				data['id'] = person.id
 				try: 
-					data['img_profile'] = person.image.url
+					data['img_profile'] = SERVER_URL + person.image.url
 				except: 
-					data['img_profile'] = person.image
+					data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 
 				data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
 				data['comment'] = friends_loans.loan_request.commentary
@@ -884,30 +889,31 @@ def lendingSolicitude(request):
 	print('amount: '+str(request.POST['amount']))
 	
 	if validate_args(request, 'id', 'id_loand', 'interest','amount', 'app'):
-		friend_loans = models.Friendships_Loans.objects.get(id=int(request.POST['id_loand']))
+		request_loan = models.LoanRequest.objects.get(id=int(request.POST['id_loand']))
+		friendship = models.Friendship.objects.get(friend2=request_loan.user.id, friend1=int(request.POST['id']))
+		friend_loans = models.Loan(loan_request=request_loan, friendship=friendship)
+		friend_loans.amount_loan= float(request.POST['amount'])
+		friend_loans.amount_interest= float(request.POST['interest'])
 		friend_loans.state = True
+
 		friend_loans.save()
 
-		loans = models.Loans(amount_loan=float(request.POST['amount']), amount_interest=float(request.POST['interest']), fk_friend_loans=friend_loans)
-		loans.save()
-
-		request_loans = models.LoanRequest.objects.get(id=friend_loans.fk_request_loans.id)
-		request_loans.amount_available += int(float(request.POST['amount']))
-		request_loans.save()
+		request_loan.amount_available += int(float(request.POST['amount']))
+		request_loan.save()
 
 		account = models.Account.objects.get(user__id=request.POST['id'])
-		account.amount_available -= float('{0:.2f}'.format(float(request.POST['amount'])))
-		account.amount_invested += float('{0:.2f}'.format(float(request.POST['amount'])))
+		account.amount_available = float(account.amount_available) - float('{0:.2f}'.format(float(request.POST['amount'])))
+		account.amount_invested = float(account.amount_invested) + float('{0:.2f}'.format(float(request.POST['amount'])))
 		account.save()
 
-		person_so = models.Profile.objects.get(id=request_loans.friend.id)
-		accout_person = models.Account.objects.get(user=person.user_so)
-		accout_person.amount_locked += float('{0:.2f}'.format(float(request.POST['amount'])))
+		person_so = models.Profile.objects.get(id=request_loan.user.id)
+		accout_person = friendship.friend1.account
+		accout_person.amount_locked = float(accout_person.amount_locked) + float('{0:.2f}'.format(float(request.POST['amount'])))
 		accout_person.save()
 
-		response['amount_available'] = account.amount_available
-		response['amount_invested'] = account.amount_available
-		response['amount_locked'] = account.amount_locked
+		response['amount_available'] = float(account.amount_available)
+		response['amount_invested'] = float(account.amount_available)
+		response['amount_locked'] = float(account.amount_locked)
 		response['error'] = False
 
 	return HttpResponse(json.dumps(response), 'content-type/json')
@@ -934,23 +940,24 @@ def viewAmountMarket(request):
 		else:
 			requests_loans = models.LoanRequest.objects.filter(state=True).order_by(tipo)[num_ini:]
 		for request_loan in requests_loans:
-			for friend in models.Friendship.objects.filter(Q(friend1=int(request.POST['id'])) | Q(friend2=int(request.POST['id'])), state=1):
-				if len(models.Loan.objects.filter(loan_request=request_loan, friendship=friend)) > 0:
-					friends_loans = models.Loan.objects.get(loan_request=request_loan, friendship=friend)
+			for friend in models.Friendship.objects.filter(friend1=int(request.POST['id']), state=1):
+				if (request_loan.user.id == friend.friend2.id):
 					person = models.Profile.objects.get(id=friend.friend2.id)
 					data = {}
 					data['id'] = person.id
+					data['loan_id'] = request_loan.id
+
 					try: 
-						data['img_profile'] = person.image.url
+						data['img_profile'] = SERVER_URL + person.image.url
 					except: 
-						data['img_profile'] = person.image
+						data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 					data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
-					data['comment'] = friends_loans.loan_request.commentary
-					data['date_expiration'] = str(friends_loans.loan_request.date_expiration.year)+'-'+str(friends_loans.loan_request.date_expiration.month)+'-'+str(friends_loans.loan_request.date_expiration.day)
-					data['date_return'] = friends_loans.loan_request.date_return
-					data['amount_request'] = float(friends_loans.loan_request.amount_request)
-					data['amount_available'] = float(friends_loans.loan_request.amount_available)
-					data['interest'] = float(friends_loans.loan_request.interest)
+					data['comment'] = request_loan.commentary
+					data['date_expiration'] = str(request_loan.date_expiration.year)+'-'+str(request_loan.date_expiration.month)+'-'+str(request_loan.date_expiration.day)
+					data['date_return'] = request_loan.date_return
+					data['amount_request'] = float(request_loan.amount_request)
+					data['amount_available'] = float(request_loan.amount_available)
+					data['interest'] = float(request_loan.interest)
 					
 					days = datetime(request_loan.date_expiration.year, request_loan.date_expiration.month, request_loan.date_expiration.day) - datetime.now()
 					data['days_finally'] = days.days
@@ -981,26 +988,29 @@ def viewInterestMarket(request):
 			requests_loans = models.LoanRequest.objects.filter(state=True).order_by(tipo)[num_ini:]
 		
 		for request_loan in requests_loans:
-			for friend in models.Friendship.objects.filter(Q(friend1=int(request.POST['id'])) | Q(friend2=int(request.POST['id'])), state=1):
-				if len(models.Loan.objects.filter(loan_request=request_loan, friendship=friend)) > 0:
-					friends_loans = models.Loan.objects.get(loan_request=request_loan, friendship=friend)
+			for friend in models.Friendship.objects.filter(friend1=int(request.POST['id']), state=1):
+				if (request_loan.user.id == friend.friend2.id):
 					person = models.Profile.objects.get(id=friend.friend2.id)
 					data = {}
 					data['id'] = person.id
+					data['loan_id'] = request_loan.id
+
 					try: 
-						data['img_profile'] = person.image.url
+						data['img_profile'] = SERVER_URL + person.image.url
 					except: 
-						data['img_profile'] = person.image
+						data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 					data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
-					data['comment'] = friends_loans.loan_request.commentary
-					data['date_expiration'] = str(friends_loans.loan_request.date_expiration.year)+'-'+str(friends_loans.loan_request.date_expiration.month)+'-'+str(friends_loans.loan_request.date_expiration.day)
-					data['date_return'] = friends_loans.loan_request.date_return
-					data['amount_request'] = float(friends_loans.loan_request.amount_request)
-					data['amount_available'] = float(friends_loans.loan_request.amount_available)
-					data['interest'] = float(friends_loans.loan_request.interest)
+					data['comment'] = request_loan.commentary
+					data['date_expiration'] = str(request_loan.date_expiration.year)+'-'+str(request_loan.date_expiration.month)+'-'+str(request_loan.date_expiration.day)
+					data['date_return'] = request_loan.date_return
+					data['amount_request'] = float(request_loan.amount_request)
+					data['amount_available'] = float(request_loan.amount_available)
+					data['interest'] = float(request_loan.interest)
+					
 					days = datetime(request_loan.date_expiration.year, request_loan.date_expiration.month, request_loan.date_expiration.day) - datetime.now()
 					data['days_finally'] = days.days
 					response['users'].append(data)
+
 
 	return HttpResponse(json.dumps(response), 'content-type/json')
 
@@ -1027,26 +1037,29 @@ def viewDeadlineMarket(request):
 			requests_loans = models.LoanRequest.objects.filter(state=True).order_by(tipo)[num_ini:]
 		
 		for request_loan in requests_loans:
-			for friend in models.Friendship.objects.filter(Q(friend1=int(request.POST['id'])) | Q(friend2=int(request.POST['id'])), state=1):
-				if len(models.Loan.objects.filter(loan_request=request_loan, friendship=friend)) > 0:
-					friends_loans = models.Loan.objects.get(loan_request=request_loan, friendship=friend)
+			for friend in models.Friendship.objects.filter(friend1=int(request.POST['id']), state=1):
+				if (request_loan.user.id == friend.friend2.id):
 					person = models.Profile.objects.get(id=friend.friend2.id)
 					data = {}
 					data['id'] = person.id
+					data['loan_id'] = request_loan.id
+
 					try: 
-						data['img_profile'] = person.image.url
+						data['img_profile'] = SERVER_URL + person.image.url
 					except: 
-						data['img_profile'] = person.image
+						data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 					data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
-					data['comment'] = friends_loans.loan_request.commentary
-					data['date_expiration'] = str(friends_loans.loan_request.date_expiration.year)+'-'+str(friends_loans.loan_request.date_expiration.month)+'-'+str(friends_loans.loan_request.date_expiration.day)
-					data['date_return'] = friends_loans.loan_request.date_return
-					data['amount_request'] = float(friends_loans.loan_request.amount_request)
-					data['amount_available'] = float(friends_loans.loan_request.amount_available)
-					data['interest'] = float(friends_loans.loan_request.interest)
+					data['comment'] = request_loan.commentary
+					data['date_expiration'] = str(request_loan.date_expiration.year)+'-'+str(request_loan.date_expiration.month)+'-'+str(request_loan.date_expiration.day)
+					data['date_return'] = request_loan.date_return
+					data['amount_request'] = float(request_loan.amount_request)
+					data['amount_available'] = float(request_loan.amount_available)
+					data['interest'] = float(request_loan.interest)
+					
 					days = datetime(request_loan.date_expiration.year, request_loan.date_expiration.month, request_loan.date_expiration.day) - datetime.now()
 					data['days_finally'] = days.days
 					response['users'].append(data)
+
 
 	return HttpResponse(json.dumps(response), 'content-type/json')
 
@@ -1062,9 +1075,9 @@ def viewRequestedAccount(request):
 			data = {}
 			data['id'] = person.id
 			try: 
-				data['img_profile'] = person.image.url
+				data['img_profile'] = SERVER_URL + person.image.url
 			except: 
-				data['img_profile'] = person.image
+				data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 			data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
 			data['comment'] = request_loan.commentary
 			data['date_expiration'] = str(request_loan.date_expiration.year)+'-'+str(request_loan.date_expiration.month)+'-'+str(request_loan.date_expiration.day)
@@ -1093,9 +1106,9 @@ def viewInvestedAccount(request):
 					data = {}
 					data['id'] = person.id
 					try: 
-						data['img_profile'] = person.image.url
+						data['img_profile'] = SERVER_URL + person.image.url
 					except: 
-						data['img_profile'] = person.image
+						data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 					data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
 					data['comment'] = request_loan.commentary
 					data['date_expiration'] = str(request_loan.date_expiration.year)+'-'+str(request_loan.date_expiration.month)+'-'+str(request_loan.date_expiration.day)
@@ -1129,7 +1142,7 @@ def viewRequestdUser(request):
 		response['amount_available'] = request_loans.amount_available
 		response['amount_loan'] = 0
 		response['interest'] = request_loans.interest
-		response['invertors'] = len(models.Friendships_Loans.objects.filter(fk_request_loans=request_loans, state=True))
+		response['invertors'] = len(models.Loan.objects.filter(loan_request=request_loans, state=True))
 		response['id_history'] = request_loans.id
 		response['return_day'] = request_loans.date_return
 		response['deadline'] = str(request_loans.deadline.year)+'-'+str(request_loans.deadline.month)+'-'+str(request_loans.deadline.day)
@@ -1182,10 +1195,9 @@ def userNagoFilter(request):
 			data['id_person'] = person.id 
 
 			try:
-				data['img_profile'] = person.image.url
+				data['img_profile'] = SERVER_URL + person.image.url
 			except:
-				data['img_profile'] = person.image
-
+				data['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 			data['fullname'] = str(person.user.first_name).capitalize()+" "+str(person.user.last_name).capitalize()
 			if person.description is not None:
 				data['description'] = person.description 

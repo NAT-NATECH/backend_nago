@@ -82,9 +82,9 @@ WSGI_APPLICATION = NAME+'.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'nago_db',
-        'USER': 'nago_admin',
-        'PASSWORD': 'nago123',
+        'NAME': 'NAT_db',
+        'USER': 'NAT_admin',
+        'PASSWORD': 'NAT123',
         'HOST': 'localhost',
     }
 }
