@@ -153,7 +153,6 @@ class LoansShow(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(LoansShow, self).get_context_data(**kwargs)
         obj = get_object_or_404(Loan, pk=int(kwargs['pk']))
-        context['object'] = LoanShowForm(instance=obj)
         context['obj'] = obj
         context['Title'] = self.title
         return context
@@ -211,8 +210,8 @@ class LoansRequestShow(LoginRequiredMixin,StaffuserRequiredMixin,TemplateView):
     def get_context_data(self, **kwargs):
         context = super(LoansRequestShow, self).get_context_data(**kwargs)
         obj = get_object_or_404(LoanRequest, id=int(kwargs['pk']))
-        context['object'] = LoanRequestShowForm(instance=obj)
         context['obj'] = obj
+        context['lenders'] = Loan.objects.filter(loan_request=obj)
         context['Title'] = self.title
         return context
 

@@ -18,11 +18,8 @@
     margin-right: 20px;
 }
 
-th.th-colspan{
+td.td-colspan{
     text-align: center;
-}
-
-.bo-table th{
     background-color: #f8f8f8;
 }
 
