@@ -30,6 +30,7 @@ APP_KEY = '2AWiAmEyRhW8VV1sCgPpTAaG5AQpyhaLTuSnCRLMMoxjRbnPPm'
 APP_SECRET = 'grU6Ne1ScFXiEaBQ8mxD9pNJMLtrQlxngPe6qfhbx0nYcQR2EG'
 ACCESS_TOKEN = 'ghMe50QC7JoLwzzvNofKqGHbZBeJwg6LMcHm9PVmDO4XnQMOd7'
 SERVER_URL = "http://localhost:8000"
+EMAIL_FROM = ""
 
 def method_post(funcion):
 	def decorador(*args, **kwargs):
@@ -219,27 +220,29 @@ def register(request):
 			account.customer_dwolla = str(customer.headers['location'])
 			account.save()
 
+			response = True
+
 			# ------------------
-			subject = 'no-reply@gmail.com'
+			subject = "Nago Code"
 			text_content = '...'
 			html_content = '<h2>Code: </h2>'+pin
-			from_email = 'wedoopruebas@gmail.com'
 			to = request.POST['email'].lower()
 			# to = request.POST['email'].lower()
-			msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+			msg = EmailMultiAlternatives(subject, text_content, EMAIL_FROM, [to])
 			msg.attach_alternative(html_content, "text/html")
 			msg.send()
 			# ------------------
 
-			response = True
-
 		except Exception as e:
 			print e
-			if account is not None:
-				account.delete()
-			person.delete()
-			root.delete()
-			response = False
+			if not response:
+				print e
+				if account is not None:
+					account.delete()
+				person.delete()
+				root.delete()
+				response = False
+
 				
 	return HttpResponse(json.dumps(response), content_type='application/json')
 
@@ -344,10 +347,9 @@ def sendEmailCode(request):
 		subject = 'Nago reset password'
 		text_content = '...'
 		html_content = '<h2>Code: </h2>' + str(code_generator(5))
-		from_email = 'wedoopruebas@gmail.com'
 		to = request.POST['email'].lower()
 		# to = request.POST['email'].lower()
-		msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+		msg = EmailMultiAlternatives(subject, text_content, EMAIL_FROM, [to])
 		msg.attach_alternative(html_content, "text/html")
 		msg.send()
 	response = True
