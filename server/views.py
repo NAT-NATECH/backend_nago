@@ -112,16 +112,17 @@ def validate_args(*args, **kwargs):
 	for i in list(args[1:len(args)]):
 		if i not in args[0].POST:
 			return False
-
 	return True
 
 def validate_request_loan(person_id):
+	print "Excede limite:" + str(len(models.LoanRequest.objects.filter(user__id=int(person_id), state=True)) > 0)
 	if len(models.LoanRequest.objects.filter(user__id=int(person_id), state=True)) > 0:
 		return False
 
 	return True
 
 def have_friends(person_id):
+	print "Have Friends:" + str(len(models.Friendship.objects.filter(friend1__id=int(person_id), state=1)) > 0)
 	if len(models.Friendship.objects.filter(friend1__id=int(person_id), state=1)) > 0:
 		return True
 	return False
@@ -560,19 +561,6 @@ def responseInvitationFriendAccept(request):
 				friend_1.state = 1; 
 				friend_1.save()
 
-				#---------------------------
-				lista_request_loans = models.LoanRequest.objects.filter(user=int(request.POST['user_invitation_id']), state=True)
-				if len(lista_request_loans) > 0:
-					request_loans = lista_request_loans[0]
-					friend_loans = models.Loan(state=False, loan_request=request_loans, friendship=friend_0)
-					friend_loans.save()
-					
-				lista_request_loans = models.LoanRequest.objects.filter(user=int(request.POST['id']), state=True)
-				if len(lista_request_loans) > 0:
-					request_loans = lista_request_loans[0]
-					friend_loans = models.Loan(state=False, loan_request=request_loans, friendship=friend_1)
-					friend_loans.save()
-
 			except Exception as e:
 				print('Error: '+str(e))
 			else:
@@ -591,12 +579,13 @@ def responseInvitationFriendCancel(request):
 		if len(friends_0) > 0 and len(friends_1) > 0:
 			try:
 				friend_0 = models.Friendship.objects.get(friend1=int(request.POST['id']), friend2=int(request.POST['user_invitation_id']), state=3)
-				friend_0.state = 2; 
+				friend_0.state = 2 
 				friend_0.save()
 
 				friend_1 = models.Friendship.objects.get(friend1=int(request.POST['user_invitation_id']), friend2=int(request.POST['id']), state=3)
-				friend_1.state = 2; 
+				friend_1.state = 2 
 				friend_1.save()
+
 			except:
 				pass
 			else:
@@ -623,6 +612,7 @@ def loanSolicitude(request):
 	response = False
 	print('deadline: '+str(request.POST['deadline']) )
 	if validate_args(request, 'id', 'amount_request', 'interest', 'date_return', 'deadline', 'date_expiration', 'commentary', 'app') and validate_request_loan(request.POST['id']) and have_friends(request.POST['id']):
+		print("on solicitude")
 		response = True
 		request_loans = models.LoanRequest()
 		request_loans.amount_request = request.POST['amount_request']
@@ -901,13 +891,13 @@ def lendingSolicitude(request):
 		request_loan.amount_available += int(float(request.POST['amount']))
 		request_loan.save()
 
-		account = models.Account.objects.get(user__id=request.POST['id'])
+		account = models.Account.objects.get(user__id=request_loan.user.id)
 		account.amount_available = float(account.amount_available) - float('{0:.2f}'.format(float(request.POST['amount'])))
 		account.amount_invested = float(account.amount_invested) + float('{0:.2f}'.format(float(request.POST['amount'])))
 		account.save()
 
-		person_so = models.Profile.objects.get(id=request_loan.user.id)
-		accout_person = friendship.friend1.account
+		person_so = models.Profile.objects.get(id=request.POST['id'])
+		accout_person = friendship.friend2.account
 		accout_person.amount_locked = float(accout_person.amount_locked) + float('{0:.2f}'.format(float(request.POST['amount'])))
 		accout_person.save()
 
@@ -1099,10 +1089,10 @@ def viewInvestedAccount(request):
 
 	if validate_args(request, 'id', 'num_ini', 'num_end', 'app') and exist_id_person(int(request.POST['id'])):
 		person_id = models.Profile.objects.get(id=int(request.POST['id']))
-		for request_loan in models.LoanRequest.objects.filter().exclude(user=person_id.user).order_by('state'):
+		for request_loan in models.LoanRequest.objects.all().exclude(user=person_id.user).order_by('state'):
 			for friend in models.Friendship.objects.filter(friend1__id=int(request.POST['id'])):
 				if len(models.Loan.objects.filter(friendship=friend, loan_request=request_loan, state=True)) > 0:
-					person = models.Profile.objects.get(id=request_loan.friend.id)
+					person = models.Profile.objects.get(id=friend.friend2.id)
 					data = {}
 					data['id'] = person.id
 					try: 
@@ -1129,7 +1119,7 @@ def viewRequestdUser(request):
 	
 	if validate_args(request, 'id', 'id_user', 'app') and exist_id_person(int(request.POST['id'])):
 		person = models.Profile.objects.get(id=int(request.POST['id']))
-		request_loans = models.LoanRequest.objects.get(user=person.user)
+		request_loans = models.LoanRequest.objects.get(user=person.user, state=True)
 		
 		response['id'] = person.id
 		response['fullname'] = str(person.user.first_name).capitalize()+' '+str(person.user.last_name).capitalize()
@@ -1138,10 +1128,10 @@ def viewRequestdUser(request):
 		date_return = addDate(request_loans.date_return, request_loans.date_expiration)
 		response['date_return'] = str(date_return.year)+'-'+str(date_return.month)+'-'+str(date_return.day)
 		response['date_return_day'] = request_loans.date_return
-		response['amount_request'] = request_loans.amount_request
-		response['amount_available'] = request_loans.amount_available
+		response['amount_request'] = float(request_loans.amount_request)
+		response['amount_available'] = float(request_loans.amount_available)
 		response['amount_loan'] = 0
-		response['interest'] = request_loans.interest
+		response['interest'] = float(request_loans.interest)
 		response['invertors'] = len(models.Loan.objects.filter(loan_request=request_loans, state=True))
 		response['id_history'] = request_loans.id
 		response['return_day'] = request_loans.date_return
@@ -1156,7 +1146,7 @@ def viewInvestedUser(request):
 
 	if validate_args(request, 'id', 'id_user', 'app') and exist_id_person(int(request.POST['id'])):
 		person = models.Profile.objects.get(id=int(request.POST['id_user']))
-		request_loans = models.LoanRequest.objects.get(user=person.user)
+		request_loans = models.LoanRequest.objects.get(user=person.user, state=True)
 		
 		response['id'] = person.id
 		response['fullname'] = str(person.user.first_name).capitalize()+' '+str(person.user.last_name).capitalize()
@@ -1165,11 +1155,11 @@ def viewInvestedUser(request):
 		date_return = addDate(request_loans.date_return, request_loans.date_expiration)
 		response['date_return'] = str(date_return.year)+'-'+str(date_return.month)+'-'+str(date_return.day)
 		response['date_return_day'] = request_loans.date_return
-		response['amount_request'] = request_loans.amount_request
-		response['amount_available'] = request_loans.amount_available
+		response['amount_request'] = float(request_loans.amount_request)
+		response['amount_available'] = float(request_loans.amount_available)
 		response['amount_loan'] = 0
-		response['interest'] = request_loans.interest
-		response['invertors'] = len(models.Friendships_Loans.objects.filter(fk_request_loans=request_loans, state=True))
+		response['interest'] = float(request_loans.interest)
+		response['invertors'] = len(models.Loan.objects.filter(loan_request=request_loans, state=True))
 		response['id_history'] = request_loans.id
 		response['return_day'] = request_loans.date_return
 		response['deadline'] = str(request_loans.deadline.year)+'-'+str(request_loans.deadline.month)+'-'+str(request_loans.deadline.day)

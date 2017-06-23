@@ -79,6 +79,16 @@ WSGI_APPLICATION = NAME+'.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'NAT_db',
+        'USER': 'NAT_admin',
+        'PASSWORD': 'NAT123',
+        'HOST': 'localhost',
+    }
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -127,10 +137,10 @@ MEDIA_ROOT = DIR+'/media/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'wedoopruebas@gmail.com'
-EMAIL_HOST_PASSWORD = 'holijiji'
+EMAIL_HOST = 'smtp-mail.outlook.com'
+EMAIL_HOST_USER = 'gabocs11_86@hotmail.com'
+EMAIL_HOST_PASSWORD = 'gabocalle18033'
+EMAIL_PORT = 25
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 LOGIN_REDIRECT_URL= "/"
