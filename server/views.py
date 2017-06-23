@@ -198,7 +198,14 @@ def register(request):
 				person.image = request.FILES['img_profile']
 
 			person.save()
+			account = root.account
+			account.amount_available=float(2000)
+			account.amount_locked=float(0)
+			account.amount_invested=float(0)
+			account.save()
 			
+			response = True
+
 			client = dwollav2.Client(key = APP_KEY, secret = APP_SECRET, environment = 'sandbox') # optional - defaults to production
 
 			app_token = client.Auth.client()
@@ -213,14 +220,10 @@ def register(request):
 			account_token = client.Token(access_token=app_token.access_token, refresh_token=client.Auth.client())
 			customer = account_token.post('customers', request_body)
 			
-			account = root.account
-			account.amount_available=float(2000)
-			account.amount_locked=float(0)
-			account.amount_invested=float(0) 
+ 
 			account.customer_dwolla = str(customer.headers['location'])
 			account.save()
 
-			response = True
 
 			# ------------------
 			subject = "Nago Code"
@@ -234,6 +237,7 @@ def register(request):
 			# ------------------
 
 		except Exception as e:
+			print "ERROR"
 			print e
 			if not response:
 				print e
