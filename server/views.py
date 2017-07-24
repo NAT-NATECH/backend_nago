@@ -429,6 +429,7 @@ def viewProfileUser(request):
 		response['lastname'] = person.user.last_name
 		response['telephone'] = person.phone
 		response['email'] = person.user.email
+		response['img_profile'] = SERVER_URL + person.image.url
 		if person.description is not None:
 			response['description'] = person.description
 		else:
