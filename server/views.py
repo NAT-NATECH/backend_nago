@@ -429,7 +429,10 @@ def viewProfileUser(request):
 		response['lastname'] = person.user.last_name
 		response['telephone'] = person.phone
 		response['email'] = person.user.email
-		response['img_profile'] = SERVER_URL + person.image.url
+		try:
+			response['img_profile'] = SERVER_URL + person.image.url
+		except:
+			response['img_profile'] = SERVER_URL + "/static/image/default_user_icon.png"
 		if person.description is not None:
 			response['description'] = person.description
 		else:
